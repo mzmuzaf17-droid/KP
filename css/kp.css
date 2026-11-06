@@ -1,0 +1,5 @@
+/* KP uslublari — 4-bosqichda */
+.kp-page { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: var(--s6); }
+.kp-page table { width: 100%; border-collapse: collapse; }
+.kp-page td { padding: var(--s2) 0; border-bottom: 1px solid var(--line); }
+.kp-page td:last-child { text-align: right; font-weight: 700; }

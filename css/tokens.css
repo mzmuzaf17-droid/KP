@@ -1,0 +1,50 @@
+/* Dizayn tokenlari. Komponent CSS’ida xom hex yozilmaydi — faqat shu o’zgaruvchilar. */
+
+@font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 400; font-display: swap; src: url('../assets/fonts/plus-jakarta-sans-latin-400-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 500; font-display: swap; src: url('../assets/fonts/plus-jakarta-sans-latin-500-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 600; font-display: swap; src: url('../assets/fonts/plus-jakarta-sans-latin-600-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 700; font-display: swap; src: url('../assets/fonts/plus-jakarta-sans-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 800; font-display: swap; src: url('../assets/fonts/plus-jakarta-sans-latin-800-normal.woff2') format('woff2'); }
+
+:root {
+  color-scheme: light;
+
+  /* TZ: rang tokenlari */
+  --brand: #0050FF;
+  --brand-700: #0034AE;
+  --brand-soft: #EAF0FF;
+  --navy: #061133;
+  --ink: #0A1633;
+  --muted: #4A5878;
+  --line: #DCE3F1;
+  --bg: #F4F7FC;
+  --accent: #FF7A1A;
+
+  /* Hosilalar (shu ranglardan) */
+  --white: #FFFFFF;
+  --brand-300: #8DB0FF;          /* to’q fonda “Omon CRM” urg’usi */
+  --brand-600: #0044D9;          /* hover */
+  --accent-ink: #A34400;         /* oq/och fonda “bepul” matni, 4.5:1 dan yuqori */
+  --accent-soft: #FFF1E6;
+  --accent-line: #FFD3B0;
+  --danger: #B42318;
+  --on-dark-muted: rgba(255, 255, 255, .78);
+  --on-dark-line: rgba(255, 255, 255, .18);
+  --focus: 0 0 0 3px rgba(0, 80, 255, .28);
+  --hero-gradient: radial-gradient(120% 140% at 100% 100%, #1F6BFF 0%, rgba(0, 80, 255, .55) 32%, rgba(6, 17, 51, 0) 64%), linear-gradient(135deg, var(--navy) 0%, #0A1E5E 55%, #0A3BC4 100%);
+  --cta-gradient: linear-gradient(110deg, #0B47E0 0%, #082E9E 45%, var(--navy) 100%);
+  --total-gradient: linear-gradient(120deg, var(--brand) 0%, #0039C2 100%);
+
+  /* Tipografiya */
+  --font: 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+
+  /* Shakl */
+  --radius: 14px;
+  --radius-sm: 10px;
+  --radius-pill: 999px;
+  --shadow-sm: 0 1px 2px rgba(10, 22, 51, .05);
+  --shadow-md: 0 8px 28px rgba(10, 22, 51, .08);
+
+  /* Bo’shliq (4/8 ritm) */
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 20px; --s6: 24px; --s8: 32px; --s10: 40px;
+}
