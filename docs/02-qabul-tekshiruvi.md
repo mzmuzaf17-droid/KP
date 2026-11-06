@@ -1,0 +1,43 @@
+# Qabul mezonlari bo’yicha tekshiruv
+
+Tekshiruv: 2026-11-06. Avtomatik testlar `npm test` (Node, 24 ta), brauzer tekshiruvi Playwright + Chromium
+(kompyuter 1400 px, planshet 1000 px, telefon 375 px) va Chromium’da yasalgan PDF (`pdfinfo`, `pdffonts`, `pdftotext`).
+
+## Hisob-kitob — `tests/quote.test.js`
+
+| Mezon | Natija |
+|---|---|
+| 3 agent, 6 oy, telefoniya va chatbot yo’q, kurs 11 941,65 → CRM 3 402 000, o’rnatish $200 = 2 388 330, umumiy 5 790 330, foydalanish 7 oy | ✅ |
+| 5 agent, 12 oy, MyZvanki 5 raqam, chatbot 500 → obuna 19 068 000, oyiga 1 589 000, $300, 15 oy, bonus bilan CRM 756 000 | ✅ |
+| O’rnatish: 1 va 3 → $200, 4 va 5 → $300, 6 → $400 | ✅ |
+| Chatbot 1 000 mijoz, 6 oy → 2 994 000 | ✅ |
+| UzTel 2 raqam, 6 oy → 1 320 000 | ✅ |
+| Bo’sh maydon KP’da “—”, NaN/undefined/0 so’m chiqmaydi | ✅ (`tests/kp.test.js` ham) |
+
+## KP va PDF
+
+| Mezon | Natija |
+|---|---|
+| 12 oy tanlanganda “6 oy” yoki “+1 oy” yo’q | ✅ `tests/kp.test.js` + brauzerda |
+| Tanlanmagan telefoniya/chatbot narx jadvalida yo’q | ✅ `tests/kp.test.js` |
+| Tur qidirish: “14 ta operator, 30 soniya, bron”, Turvisor yo’q | ✅ `tests/kp.test.js` |
+| PDF A4, 3 bet, bloklar kesilmaydi, matn belgilanadi | ✅ Chromium: 595×842 pt, 3 bet, har bet kontenti 1123 px ichida; Plus Jakarta Sans 5 vazni PDF ichiga joylangan; `pdftotext` matnni o’qiydi |
+| PDF fayl nomi agentlik va sana bilan | ✅ `OmonCRM_KP_<agentlik>_<YYYY-MM-DD>` (print vaqtida sahifa sarlavhasi) |
+| Chrome va Safari’da (kompyuter va telefon) bir xil | ⚠️ Faqat Chromium’da tekshirildi. Safari’da qo’lda ko’rish kerak (pastga qarang) |
+
+## Saqlash va moslik
+
+| Mezon | Natija |
+|---|---|
+| Eski saytda saqlangan KP xatosiz ochiladi, chatbot “yo’q” | ✅ `tests/storage.test.js` + brauzerda (eski `phoneType: company` → UzTel) |
+| JSON zaxira yangi maydonlar bilan yuklanadi va qayta import qilinadi | ✅ eski sayt eksporti ham import bo’ladi |
+| Forma 375 px’da gorizontal aylantirishsiz | ✅ `scrollWidth = 375` |
+| USD kursi kelmasa qo’lda kiritib hisoblash mumkin | ✅ (bu muhitda cbu.uz yopiq edi — aynan shu holat sinaldi) |
+
+## Safari’da qo’lda tekshirish
+
+1. iPhone va Mac Safari’da saytni ochib, nazorat misolini kiriting (5 agent, 12 oy, MyZvanki 5 raqam, chatbot 500).
+2. “PDF chiqarish” → chop etish oynasida qog’oz **A4**, chegaralar **yo’q / minimal**, “Fon grafikasi” yoqilgan bo’lsin.
+3. PDF 3 bet bo’lishi va 3-betning pastidagi “Keyingi qadam” bloki va sahifa raqami “3 / 3” sig’ishi kerak.
+
+Eski Safari versiyalari `@page { margin: 0 }` ni e’tiborsiz qoldirishi mumkin; shunda chegaralarni chop etish oynasida qo’lda “Yo’q” qilish kerak.
