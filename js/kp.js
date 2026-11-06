@@ -10,6 +10,8 @@ const PAGES = 3;
 const has = (v) => String(v ?? '').trim() !== '';
 const n = (v) => toNumber(v);
 const isNum = (v) => typeof v === 'number' && Number.isFinite(v);
+/** Matn ichidagi summa qator oxirida bo’linmasin: raqamlar orasidagi bo’sh joy → NBSP. */
+const keep = (s) => String(s).replace(/(\d) (?=\d{3}\b)/g, '$1\u00a0').replace(/ (so’m|soat|ta)\b/g, '\u00a0$1');
 
 /** Katta raqam: “19 068 000 so’m” → raqam + kichik birlik. Bo’sh bo’lsa “—”. */
 function big(value, unit = 'so’m') {
@@ -216,7 +218,7 @@ function priceSection(num, q) {
 
   const bonusBlocks = Array.from({ length: q.usageMonths }, (_, i) => `<i class="${i < M ? 'paid' : 'free'}"></i>`).join('');
   const perMonth = q.crmMonthlyWithBonus !== null
-    ? ` Shunda ${q.agents} agentli jamoa uchun CRM oyiga ${fmtUzs(q.crmMonthlyWithBonus)}ga tushadi.`
+    ? ` Shunda ${q.agents} agentli jamoa uchun CRM oyiga ${keep(fmtUzs(q.crmMonthlyWithBonus))}ga tushadi.`
     : '';
 
   return `<section class="kp-section">
@@ -276,7 +278,7 @@ function termsSection(num, state, q, rateMeta) {
   ].filter(Boolean);
   return `<section class="kp-section">
     ${sectionHead(num, 'Shartlar', '')}
-    <ul class="kp-terms">${items.map((t) => `<li>${t}</li>`).join('')}</ul>
+    <ul class="kp-terms">${items.map((t) => `<li>${keep(t)}</li>`).join('')}</ul>
   </section>`;
 }
 

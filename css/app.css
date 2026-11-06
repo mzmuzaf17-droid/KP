@@ -121,6 +121,8 @@ body.presenting .workspace { grid-template-columns: minmax(0, 1fr); max-width: 9
 @media (max-width: 720px) {
   .topbar-inner { padding: var(--s2) var(--s4); }
   .topbar-brand small, .hide-sm { display: none; }
+  .topbar-brand strong { white-space: nowrap; }
+  .toolbar { flex-wrap: nowrap; }
   .btn-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   .toolbar .btn { width: 42px; padding: 0; }
   .toolbar .btn.primary { width: auto; padding: 0 var(--s3); }
@@ -128,6 +130,10 @@ body.presenting .workspace { grid-template-columns: minmax(0, 1fr); max-width: 9
   .workspace { padding: var(--s4); gap: var(--s4); }
   .fields { grid-template-columns: minmax(0, 1fr); }
   .preview-head { flex-direction: column; align-items: flex-start; gap: 4px; }
+}
+
+@media (max-width: 400px) {
+  .topbar-brand > span:last-child { display: none; }
 }
 
 @media print {

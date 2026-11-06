@@ -10,7 +10,7 @@ const RATE = { kind: 'official', date: '06.11.2026', manual: false };
 function kp(overrides = {}) {
   const state = { ...defaultState('2026-11-06'), ...overrides };
   const html = renderKp({ state, quote: calculateQuote(quoteInputFromState(state)), forecast: leadForecast(state), rateMeta: RATE });
-  const text = html.replace(/<svg[\s\S]*?<\/svg>/g, ' ').replace(/<[^>]+>/g, ' ').replace(/&[a-z#0-9]+;/g, ' ').replace(/\s+/g, ' ');
+  const text = html.replace(/<svg[\s\S]*?<\/svg>/g, ' ').replace(/<[^>]+>/g, ' ').replace(/&[a-z#0-9]+;/g, ' ').replace(/\u00a0/g, ' ').replace(/\s+/g, ' ');
   return { html, text };
 }
 
