@@ -355,8 +355,22 @@ function bind() {
   });
 }
 
+/** 600–794 px kenglikda A4 betni kichraytirib sig’diradi; telefonda (≤600) KP o’zi moslashadi. */
+function fitPreview() {
+  const box = $('kp');
+  const apply = () => {
+    const w = box.clientWidth;
+    const zoom = w > 600 && w < 796 ? Math.max(0.5, (w - 2) / 796) : 1;
+    box.style.setProperty('--kp-zoom', zoom.toFixed(4));
+  };
+  if ('ResizeObserver' in window) new ResizeObserver(apply).observe(box);
+  else window.addEventListener('resize', apply);
+  apply();
+}
+
 function init() {
   hydrateIcons();
+  fitPreview();
   const draft = readDraft(store);
   if (draft) {
     state = draft.state;

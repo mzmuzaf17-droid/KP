@@ -1,5 +1,236 @@
-/* KP uslublari — 4-bosqichda */
-.kp-page { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: var(--s6); }
+/* KP hujjati. Bet 794×1123 px = A4 (96 dpi). Ekranda bet shu o’lchamda chiziladi va kerak bo’lsa
+   kichraytiriladi (--kp-zoom); telefonda (≤600 px) bloklar bitta ustunga tushadi. PDF har doim A4. */
+
+.kp { container-type: inline-size; }
+.kp-pages { --pad: 44px; display: grid; gap: var(--s6); justify-content: center; zoom: var(--kp-zoom, 1); }
+.kp-page {
+  position: relative; width: 794px; min-height: 1123px;
+  display: flex; flex-direction: column;
+  background: var(--white); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 6px; box-shadow: var(--shadow-md);
+  overflow: hidden;
+  font-size: 11.5px; line-height: 1.5; font-variant-numeric: tabular-nums;
+}
+.kp-body { flex: 1; display: flex; flex-direction: column; gap: 26px; padding: var(--pad) var(--pad) 0; }
+.kp-page.first .kp-body { padding-top: 0; }
+.kp-page h1, .kp-page h2, .kp-page h3, .kp-page p { margin: 0; }
+.kp-page small { font-size: inherit; }
+
+/* Bet pastki qismi */
+.kp-footer {
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: var(--s4);
+  margin: var(--s6) var(--pad) 0; padding: 12px 0 18px; border-top: 1px solid var(--line);
+  color: var(--muted); font-size: 10.5px;
+}
+.kp-footer-logo { color: var(--brand); }
+.kp-footer-page { justify-self: end; }
+.logo-lockup { display: inline-flex; align-items: center; gap: 8px; }
+.logo-word { font-weight: 800; letter-spacing: -.2px; }
+.kp-footer .logo-word { color: var(--ink); font-size: 11px; }
+
+/* Sarlavha bloki */
+.kp-hero {
+  position: relative; isolation: isolate; overflow: hidden;
+  margin: 0 calc(var(--pad) * -1); padding: 34px var(--pad) 30px;
+  background: var(--hero-gradient); color: var(--white);
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+.kp-hero-art { position: absolute; right: -150px; bottom: -190px; z-index: -1; color: var(--white); opacity: .09; }
+.kp-hero-top { display: flex; justify-content: space-between; align-items: center; gap: var(--s4); }
+.kp-hero-logo { color: var(--white); }
+.kp-hero-logo .logo-word { font-size: 19px; }
+.kp-hero-pill { padding: 7px 16px; border: 1px solid var(--on-dark-line); border-radius: var(--radius-pill); font-size: 10.5px; font-weight: 700; letter-spacing: 1.6px; text-transform: uppercase; white-space: nowrap; }
+.kp-hero-main { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s6); align-items: center; margin: 46px 0 30px; }
+.kp-hero-main.with-logo { grid-template-columns: minmax(0, 1fr) 150px; }
+.kp-hero h1 { font-size: 39px; line-height: 1.08; font-weight: 800; letter-spacing: -1.1px; overflow-wrap: anywhere; }
+.kp-hero h1 span { display: block; color: var(--brand-300); }
+.kp-hero-lead { margin-top: 16px !important; max-width: 540px; color: var(--on-dark-muted); font-size: 13px; line-height: 1.55; }
+.kp-client-logo { width: 150px; height: 112px; padding: 14px; border-radius: var(--radius); background: var(--white); display: grid; place-items: center; box-shadow: 0 10px 30px rgba(0, 0, 0, .18); }
+.kp-client-logo img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.kp-hero-meta { margin: 0; padding-top: 18px; border-top: 1px solid var(--on-dark-line); display: flex; flex-wrap: wrap; gap: 14px 40px; }
+.kp-hero-meta dt { color: var(--on-dark-muted); font-size: 9.5px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; margin-bottom: 4px; }
+.kp-hero-meta dd { margin: 0; font-size: 12.5px; font-weight: 700; line-height: 1.35; }
+.kp-hero-meta dd small { display: block; color: var(--on-dark-muted); font-weight: 500; font-size: 11px; }
+
+/* Asosiy raqamlar */
+.kp-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.kp-stat { padding: 16px 18px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg); }
+.kp-stat strong { display: block; color: var(--brand); font-size: 27px; line-height: 1.1; font-weight: 800; letter-spacing: -.8px; }
+.kp-stat span { display: block; margin-top: 6px; color: var(--muted); font-size: 11px; line-height: 1.4; }
+
+/* Bo’lim sarlavhasi */
+.kp-section { break-inside: avoid; }
+.kp-section-head { margin-bottom: 14px; }
+.kp-eyebrow { display: flex; align-items: center; gap: 10px; color: var(--brand); font-size: 10.5px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
+.kp-eyebrow::before { content: ''; width: 22px; height: 2px; border-radius: 2px; background: currentColor; }
+.kp-eyebrow span { color: var(--ink); letter-spacing: 1px; }
+.kp-eyebrow.on-dark { color: var(--brand-300); }
+.kp-section-head h2 { margin-top: 6px; font-size: 25px; line-height: 1.15; font-weight: 800; letter-spacing: -.7px; }
+
+/* 01 Agentlik holati */
+.kp-metrics { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+.kp-metric { padding: 12px 12px 13px; border: 1px solid var(--line); border-radius: var(--radius); break-inside: avoid; }
+.kp-metric .ic { color: var(--brand); }
+.kp-metric strong { display: block; margin-top: 8px; font-size: 19px; line-height: 1.15; font-weight: 800; letter-spacing: -.4px; }
+.kp-metric span { display: block; margin-top: 3px; color: var(--muted); font-size: 10.5px; line-height: 1.35; }
+
+/* 02 Qo’shimcha sotuv */
+.kp-opps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.kp-opp { padding: 13px 14px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg); break-inside: avoid; }
+.kp-opp-top { display: flex; gap: 6px; align-items: flex-start; color: var(--muted); font-size: 10.5px; line-height: 1.35; min-height: 28px; }
+.kp-opp-top .ic { color: var(--brand); margin-top: 1px; }
+.kp-opp strong { display: block; margin-top: 8px; color: var(--brand); font-size: 20px; line-height: 1.15; font-weight: 800; letter-spacing: -.5px; }
+.kp-opp strong small, .kp-big strong small { margin-left: 4px; font-size: 11px; font-weight: 700; letter-spacing: 0; }
+.kp-opp > small { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; }
+.kp-inline-note, .kp-disclaimer { display: flex; gap: 8px; align-items: flex-start; margin-top: 10px !important; color: var(--muted); font-size: 10.5px; }
+.kp-inline-note .ic, .kp-disclaimer .ic { margin-top: 1px; color: var(--brand); }
+
+/* 03 Nima olasiz */
+.kp-features { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.kp-feature { display: flex; gap: 14px; padding: 18px; border: 1px solid var(--line); border-radius: var(--radius); break-inside: avoid; }
+.kp-feature-icon { flex: none; width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; background: var(--brand-soft); color: var(--brand); }
+.kp-feature h3 { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 14px; font-weight: 800; letter-spacing: -.2px; }
+.kp-feature h3 em { font-style: normal; padding: 2px 8px; border-radius: var(--radius-pill); background: var(--brand-soft); color: var(--brand-700); font-size: 10px; font-weight: 700; }
+.kp-feature p { margin-top: 5px !important; color: var(--muted); font-size: 11.5px; line-height: 1.5; }
+
+/* Jadvallar */
+.kp-table-wrap { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
 .kp-page table { width: 100%; border-collapse: collapse; }
-.kp-page td { padding: var(--s2) 0; border-bottom: 1px solid var(--line); }
-.kp-page td:last-child { text-align: right; font-weight: 700; }
+.kp-page th, .kp-page td { text-align: left; vertical-align: middle; }
+.kp-page tr { break-inside: avoid; }
+.kp-page thead th { padding: 11px 16px; background: var(--bg); color: var(--muted); font-size: 9.5px; font-weight: 700; letter-spacing: 1.3px; text-transform: uppercase; }
+
+.kp-compare tbody th, .kp-compare td { padding: 11px 16px; border-top: 1px solid var(--line); font-size: 11.5px; }
+.kp-compare tbody th { font-weight: 600; }
+.kp-compare td { color: var(--muted); }
+.kp-compare thead th.omon { background: var(--brand); color: var(--white); }
+.kp-compare td.omon { background: var(--brand-soft); color: var(--brand-700); font-weight: 700; }
+.kp-yes { display: inline-flex; align-items: center; gap: 6px; }
+
+/* 05 Narx hisobi */
+.kp-chips { list-style: none; margin: 0 0 14px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.kp-chips li { display: inline-flex; align-items: center; gap: 7px; padding: 6px 13px; border: 1px solid var(--line); border-radius: var(--radius-pill); background: var(--bg); font-size: 11px; font-weight: 700; }
+.kp-chips .ic { color: var(--brand); }
+.kp-price tbody th, .kp-price td { padding: 10px 16px; border-top: 1px solid var(--line); }
+.kp-price tbody th b { display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 800; }
+.kp-price tbody th small, .kp-price td small { display: block; margin-top: 2px; color: var(--muted); font-size: 10.5px; font-weight: 500; }
+.kp-price td { color: var(--muted); font-size: 12px; }
+.kp-price .num { text-align: right; white-space: nowrap; }
+.kp-price td.num { color: var(--ink); font-size: 13px; font-weight: 800; }
+.kp-price tr.kp-total th, .kp-price tr.kp-total td { background: var(--brand); color: var(--white); border-top: 0; font-size: 13px; font-weight: 700; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.kp-price tr.kp-total td.num { color: var(--white); font-size: 14px; }
+.kp-price tr.kp-setup th, .kp-price tr.kp-setup td { background: var(--bg); }
+.kp-price tr.kp-grand td.num { color: var(--brand-700); font-size: 14px; }
+.kp-free { font-style: normal; padding: 2px 8px; border-radius: var(--radius-pill); background: var(--accent-soft); color: var(--accent-ink); font-size: 10px; font-weight: 700; }
+
+.kp-bigs { display: grid; grid-template-columns: 1.25fr 1fr 1fr; gap: 12px; margin-top: 14px; }
+.kp-big { padding: 14px 18px; border: 1px solid var(--line); border-radius: var(--radius); break-inside: avoid; }
+.kp-big span { display: block; color: var(--muted); font-size: 9.5px; font-weight: 700; letter-spacing: 1.3px; text-transform: uppercase; }
+.kp-big strong { display: block; margin-top: 4px; font-size: 25px; line-height: 1.15; font-weight: 800; letter-spacing: -.8px; white-space: nowrap; }
+.kp-big.primary { background: var(--total-gradient); border-color: transparent; color: var(--white); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.kp-big.primary span { color: var(--on-dark-muted); }
+
+.kp-bonus { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 18px; align-items: center; margin-top: 14px; padding: 14px 18px; border: 1px solid var(--accent-line); border-radius: var(--radius); background: var(--accent-soft); break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.kp-bonus p { font-size: 12px; line-height: 1.5; }
+.kp-bonus b { color: var(--accent-ink); }
+.kp-bonus-blocks { display: flex; gap: 3px; }
+.kp-bonus i { display: block; width: 13px; height: 22px; border-radius: 4px; background: var(--brand); }
+.kp-bonus i.free { background: var(--accent); }
+.kp-bonus-legend { display: flex; gap: 14px; margin-top: 6px; font-size: 10px; color: var(--muted); }
+.kp-bonus-legend span { display: inline-flex; align-items: center; gap: 5px; }
+.kp-bonus-legend i { width: 9px; height: 9px; border-radius: 2px; }
+
+/* 06 Joriy etish */
+.kp-steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.kp-steps li { padding: 13px 16px; border: 1px solid var(--line); border-radius: var(--radius); break-inside: avoid; }
+.kp-step-tag { display: inline-block; padding: 3px 9px; border-radius: 6px; background: var(--brand); color: var(--white); font-size: 9.5px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.kp-step-tag.dark { background: var(--navy); }
+.kp-steps h3 { margin-top: 8px !important; font-size: 13.5px; font-weight: 800; }
+.kp-steps p { margin-top: 3px !important; color: var(--muted); font-size: 11px; line-height: 1.45; }
+
+/* 07 Shartlar */
+.kp-terms { margin: 0; padding: 0 0 0 16px; display: grid; gap: 4px; color: var(--muted); font-size: 11px; line-height: 1.45; }
+.kp-terms li::marker { color: var(--brand); }
+
+/* Keyingi qadam */
+.kp-cta {
+  position: relative; isolation: isolate; overflow: hidden; break-inside: avoid;
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 20px; align-items: center;
+  padding: 22px 24px; border-radius: 18px; background: var(--cta-gradient); color: var(--white);
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+.kp-cta-art { position: absolute; right: -70px; top: -80px; z-index: -1; opacity: .08; color: var(--white); }
+.kp-cta h2 { margin-top: 6px !important; font-size: 23px; font-weight: 800; letter-spacing: -.5px; }
+.kp-cta-text p:last-child { margin-top: 4px !important; color: var(--on-dark-muted); font-size: 12px; }
+.kp-cta-card { display: grid; gap: 6px; padding: 14px 18px; border-radius: var(--radius); background: var(--white); color: var(--ink); text-decoration: none; min-width: 250px; }
+.kp-cta-card strong { display: flex; align-items: center; gap: 10px; color: var(--brand); font-size: 20px; font-weight: 800; letter-spacing: -.3px; white-space: nowrap; }
+.kp-cta-card span { display: flex; justify-content: space-between; gap: var(--s4); font-size: 11.5px; }
+
+/* 2-bet: bo’sh joy ko’p — kartochkalar kengroq */
+.kp-page[data-page="2"] .kp-body { gap: 34px; }
+.kp-page[data-page="2"] .kp-feature { padding: 22px 20px; }
+.kp-page[data-page="2"] .kp-compare tbody th, .kp-page[data-page="2"] .kp-compare td { padding-top: 14px; padding-bottom: 14px; }
+
+/* 3-bet: narx, joriy etish, shartlar va keyingi qadam bitta A4 ga sig’ishi uchun zichroq */
+.kp-page[data-page="3"] .kp-body { gap: 14px; padding-top: 28px; }
+.kp-page[data-page="3"] .kp-section-head { margin-bottom: 10px; }
+.kp-page[data-page="3"] .kp-section-head h2 { font-size: 24px; margin-top: 4px; }
+.kp-page[data-page="3"] .kp-chips { margin-bottom: 10px; }
+.kp-page[data-page="3"] thead th { padding-top: 8px; padding-bottom: 8px; }
+.kp-price tbody th, .kp-price td { padding-top: 7px; padding-bottom: 7px; }
+.kp-page[data-page="3"] .kp-bigs, .kp-page[data-page="3"] .kp-bonus { margin-top: 10px; }
+.kp-page[data-page="3"] .kp-big { padding: 11px 16px; }
+.kp-page[data-page="3"] .kp-big strong { font-size: 23px; }
+.kp-page[data-page="3"] .kp-bonus { padding: 11px 16px; }
+.kp-page[data-page="3"] .kp-steps li { padding: 11px 14px; }
+.kp-page[data-page="3"] .kp-steps p { font-size: 10.5px; }
+.kp-page[data-page="3"] .kp-terms { gap: 2px; font-size: 10.5px; }
+.kp-page[data-page="3"] .kp-cta { padding: 16px 22px; }
+.kp-page[data-page="3"] .kp-cta h2 { font-size: 21px; }
+.kp-page[data-page="3"] .kp-footer { margin-top: 16px; }
+
+/* ---------- Telefon: bloklar bitta ustunga, bet balandligi erkin ---------- */
+@container (max-width: 600px) {
+  .kp-pages { --pad: 18px; zoom: 1; gap: var(--s4); }
+  .kp-page { width: 100%; min-height: 0; border-radius: var(--radius); }
+  .kp-body { gap: 22px; }
+  .kp-hero { padding-top: 22px; padding-bottom: 22px; }
+  .kp-hero-art { right: -260px; bottom: -280px; }
+  .kp-hero-logo .logo-word { font-size: 16px; }
+  .kp-hero-pill { padding: 5px 10px; font-size: 9px; letter-spacing: 1px; }
+  .kp-hero-main, .kp-hero-main.with-logo { grid-template-columns: minmax(0, 1fr); margin: 28px 0 20px; gap: var(--s4); }
+  .kp-client-logo { order: -1; width: 120px; height: 84px; }
+  .kp-hero h1 { font-size: 29px; }
+  .kp-hero-meta { gap: 12px 24px; }
+  .kp-stats, .kp-features, .kp-steps, .kp-bigs { grid-template-columns: minmax(0, 1fr); }
+  .kp-metrics, .kp-opps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .kp-section-head h2 { font-size: 21px; }
+  .kp-table-wrap { overflow-x: auto; }
+  .kp-compare { min-width: 520px; }
+  .kp-price thead th:nth-child(2), .kp-price td:nth-child(2) { display: none; }
+  .kp-price tbody th, .kp-price td, .kp-page thead th { padding-left: 12px; padding-right: 12px; }
+  .kp-bonus { grid-template-columns: minmax(0, 1fr); }
+  .kp-bonus i { width: 11px; }
+  .kp-cta { grid-template-columns: minmax(0, 1fr); padding: 20px; }
+  .kp-cta-card { min-width: 0; }
+  .kp-cta-card strong { font-size: 18px; }
+  .kp-footer { grid-template-columns: 1fr auto; }
+  .kp-footer > span:nth-child(2) { display: none; }
+}
+
+/* ---------- PDF (brauzer chop etishi) ---------- */
+@page { size: A4; margin: 0; }
+@media print {
+  html, body { width: 210mm; background: var(--white); }
+  .preview { display: block; }
+  .kp { container-type: normal; }
+  .kp-pages { display: block; zoom: 1 !important; }
+  .kp-page {
+    width: 210mm; height: 297mm; min-height: 0; margin: 0;
+    border: 0; border-radius: 0; box-shadow: none;
+    break-after: page; page-break-after: always; break-inside: avoid;
+  }
+  .kp-page:last-child { break-after: auto; page-break-after: auto; }
+  .kp-section, .kp-feature, .kp-stat, .kp-metric, .kp-opp, .kp-big, .kp-steps li, .kp-cta, .kp-bonus, .kp-page tr { break-inside: avoid; page-break-inside: avoid; }
+  a { color: inherit; text-decoration: none; }
+}
