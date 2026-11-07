@@ -48,7 +48,7 @@ function hero({ state, q, logoSrc }) {
     ? `${esc(owner)}${agency ? `<small>${esc(agency)}</small>` : ''}`
     : agency ? `${esc(agency)} rahbariga` : 'Turizm agentligi rahbariga';
   const meta = [
-    ['Kimga', `${kimga}${contact ? `<small>${esc(contact)}</small>` : ''}`],
+    owner || agency || contact ? ['Kimga', `${owner || agency ? kimga : ''}${contact ? `<small>${esc(contact)}</small>` : ''}`] : null,
     ['Kimdan', `${SELLER.name}<small>Omon CRM</small>`],
     city ? ['Hudud', esc(city)] : null,
     until ? ['Amal qiladi', `${fmtDate(until)} gacha<small>${Math.floor(days)} kun</small>`] : null,
@@ -94,7 +94,8 @@ function statusSection(num, state) {
     ['user-x', v('missed'), 'lid kuniga ishlanmay qoladi'],
     ['clock', t('responseNow'), 'mijozga javob berish'],
     ['search', t('searchNow'), 'bitta tur qidirish'],
-  ];
+  ].filter(([, value]) => value !== DASH);
+  if (!cards.length) return '';
   return `<section class="kp-section">
     ${sectionHead(num, 'Agentlik holati', 'Bugungi ish jarayoni raqamlarda')}
     <div class="kp-metrics">${cards.map(([ic, val, label]) => `<div class="kp-metric">${icon(ic, { size: 16 })}<strong>${val}</strong><span>${label}</span></div>`).join('')}</div>
@@ -121,15 +122,16 @@ function opportunitySection(num, state, f) {
       label: 'tur qidirishda tejalgan vaqt oyiga',
       note: f.searchNow !== null && f.searchAfter !== null ? `${fmtMinutes(f.searchNow)} o’rniga ${fmtMinutes(f.searchAfter)}` : 'kunlik qidirishlar × ish kunlari',
     },
-  ];
+  ].filter((card) => card.value !== DASH);
   const reply = f.responseNow !== null && f.responseAfter !== null
     ? `<p class="kp-inline-note">${icon('clock', { size: 14 })}Mijozga javob berish vaqti: ${fmtMinutes(f.responseNow)} o’rniga ${fmtMinutes(f.responseAfter)} — barcha murojaatlar bitta oynada, javobsizlari alohida belgilanadi.</p>`
     : '';
+  if (!cards.length && !reply) return '';
   return `<section class="kp-section">
     ${sectionHead(num, 'Qo’shimcha sotuv imkoniyati', 'Ishlanmay qolayotgan lidlar — yo’qotilayotgan bronlar')}
-    <div class="kp-opps">${cards.map((c) => `<div class="kp-opp">
+    ${cards.length ? `<div class="kp-opps">${cards.map((c) => `<div class="kp-opp">
       <div class="kp-opp-top">${icon(c.ic, { size: 16 })}<span>${c.label}</span></div>
-      <strong>${c.value}</strong><small>${c.note}</small></div>`).join('')}</div>
+      <strong>${c.value}</strong><small>${c.note}</small></div>`).join('')}</div>` : ''}
     ${reply}
     <p class="kp-disclaimer">${icon('info', { size: 14 })}Bu prognoz, kafolat emas: hisob siz kiritgan ko’rsatkichlarga asoslangan.</p>
   </section>`;
@@ -191,16 +193,16 @@ function priceSection(num, q) {
   const chips = [
     q.agents ? ['users', `${q.agents} ta agent`] : null,
     ['calendar', `${M} oylik obuna, +${q.bonusMonths} oy bepul`],
-    q.telephonyType !== 'none' ? ['mic', `Qo’ng’iroq yozuvi · ${TELEPHONY_ROW[q.telephonyType].chip}`] : null,
+    q.telephonyType !== 'none' && isNum(q.telephony) ? ['mic', `Qo’ng’iroq yozuvi · ${TELEPHONY_ROW[q.telephonyType].chip}`] : null,
     q.chatbotType !== 'none' ? ['sparkles', 'AI chatbot'] : null,
   ].filter(Boolean);
 
   const rows = [
-    {
+    isNum(q.crm) && {
       title: `Omon CRM obunasi<em class="kp-free">+${q.bonusMonths} oy bepul</em>`, sub: 'Har bir agent uchun',
       calc: `${fmtInt(PRICING.crmPerAgentMonth)} × ${agentsText} agent × ${M} oy`, value: fmtInt(q.crm),
     },
-    q.telephonyType !== 'none' && {
+    q.telephonyType !== 'none' && isNum(q.telephony) && {
       title: TELEPHONY_ROW[q.telephonyType].title, sub: TELEPHONY_ROW[q.telephonyType].sub,
       calc: `${fmtInt(PRICING.telephony[q.telephonyType])} × ${q.lines} raqam × ${M} oy`, value: fmtInt(q.telephony),
     },
@@ -209,6 +211,8 @@ function priceSection(num, q) {
       calc: `${fmtInt(PRICING.chatbot[q.chatbotType])} × ${M} oy`, value: fmtInt(q.chatbot),
     },
   ].filter(Boolean);
+
+  if (!rows.length) return '';
 
   const rateText = q.usdRate === null ? null : `1 USD = ${fmtDecimal(q.usdRate)} so’m`;
   const setupCalc = q.agents ? `${setupTierLabel(q.agents)}${rateText ? `<small>${rateText}</small>` : ''}` : DASH;
@@ -228,16 +232,16 @@ function priceSection(num, q) {
       <thead><tr><th scope="col">Xizmat</th><th scope="col">Hisob</th><th scope="col" class="num">${M} oyga, so’m</th></tr></thead>
       <tbody>
         ${rows.map((r) => `<tr><th scope="row"><b>${r.title}</b><small>${r.sub}</small></th><td>${r.calc}</td><td class="num">${r.value}</td></tr>`).join('')}
-        <tr class="kp-total"><th scope="row"><b>Jami obuna va xizmatlar</b></th><td>${M} oy uchun</td><td class="num">${fmtInt(q.subscriptionTotal)}</td></tr>
-        <tr class="kp-setup"><th scope="row"><b>O’rnatish va integratsiya</b><small>Bir martalik to’lov, 2 kunda bajariladi</small></th><td>${setupCalc}</td><td class="num">${fmtUsd(q.setupUsd)}${q.setupUzs !== null ? `<small>${fmtInt(q.setupUzs)} so’m</small>` : ''}</td></tr>
-        <tr class="kp-grand"><th scope="row"><b>Umumiy to’lov</b></th><td>Obuna va o’rnatish birga</td><td class="num">${grand}</td></tr>
+        ${isNum(q.subscriptionTotal) ? `<tr class="kp-total"><th scope="row"><b>Jami obuna va xizmatlar</b></th><td>${M} oy uchun</td><td class="num">${fmtInt(q.subscriptionTotal)}</td></tr>` : ''}
+        ${isNum(q.setupUsd) ? `<tr class="kp-setup"><th scope="row"><b>O’rnatish va integratsiya</b><small>Bir martalik to’lov, 2 kunda bajariladi</small></th><td>${setupCalc}</td><td class="num">${fmtUsd(q.setupUsd)}${q.setupUzs !== null ? `<small>${fmtInt(q.setupUzs)} so’m</small>` : ''}</td></tr>` : ''}
+        ${grand !== DASH ? `<tr class="kp-grand"><th scope="row"><b>Umumiy to’lov</b></th><td>Obuna va o’rnatish birga</td><td class="num">${grand}</td></tr>` : ''}
       </tbody>
     </table></div>
-    <div class="kp-bigs">
-      <div class="kp-big primary"><span>${M} oyga jami</span><strong>${big(q.subscriptionTotal)}</strong></div>
-      <div class="kp-big"><span>O’rtacha oyiga</span><strong>${big(q.avgMonthly)}</strong></div>
-      <div class="kp-big"><span>Bir martalik o’rnatish</span><strong>${fmtUsd(q.setupUsd)}</strong></div>
-    </div>
+    ${isNum(q.subscriptionTotal) || isNum(q.setupUsd) ? `<div class="kp-bigs">
+      ${isNum(q.subscriptionTotal) ? `<div class="kp-big primary"><span>${M} oyga jami</span><strong>${big(q.subscriptionTotal)}</strong></div>` : ''}
+      ${isNum(q.avgMonthly) ? `<div class="kp-big"><span>O’rtacha oyiga</span><strong>${big(q.avgMonthly)}</strong></div>` : ''}
+      ${isNum(q.setupUsd) ? `<div class="kp-big"><span>Bir martalik o’rnatish</span><strong>${fmtUsd(q.setupUsd)}</strong></div>` : ''}
+    </div>` : ''}
     <div class="kp-bonus">
       <p><b>CRM obunasiga ${q.bonusMonths} oy bepul qo’shiladi.</b> ${M} oy uchun to’laysiz, CRM’dan ${q.usageMonths} oy foydalanasiz.${perMonth}</p>
       <div class="kp-bonus-chart" role="img" aria-label="${M} oy to’lanadi, ${q.bonusMonths} oy bepul">
@@ -268,7 +272,7 @@ function termsSection(num, state, q, rateMeta) {
     : rateMeta.kind === 'fallback' ? `namunaviy kurs, ${esc(rateMeta.date)}` : 'kelishilgan kurs';
   const items = [
     `Obuna: ${q.months} oy to’lov + ${q.bonusMonths} oy bepul = ${q.usageMonths} oy CRM’dan foydalanish. Bepul oylar CRM obunasiga beriladi.`,
-    `O’rnatish va integratsiya bir martalik to’lov: ${fmtUsd(q.setupUsd)}${q.agents ? ` (${setupTierLabel(q.agents)})` : ''}. Keyingi oylarda takrorlanmaydi.`,
+    isNum(q.setupUsd) ? `O’rnatish va integratsiya bir martalik to’lov: ${fmtUsd(q.setupUsd)}${q.agents ? ` (${setupTierLabel(q.agents)})` : ''}. Keyingi oylarda takrorlanmaydi.` : null,
     q.usdRate !== null
       ? `Narxlar so’mda. O’rnatish narxi 1 USD = ${fmtDecimal(q.usdRate)} so’m (${rateSource}) bo’yicha hisoblangan; to’lov kunidagi kurs bilan aniqlashtiriladi.`
       : 'Narxlar so’mda. O’rnatish narxi dollarda; so’mdagi summasi to’lov kunidagi Markaziy bank kursi bo’yicha hisoblanadi.',
@@ -300,7 +304,7 @@ function nextStep() {
 /* ---------------- yig’ish ---------------- */
 
 export function renderKp({ state, quote: q, forecast: f, rateMeta, logoSrc = '' }) {
-  // Bo’limlar doim chiqadi (TZ: bo’sh maydon KP’da “—”), raqamlash 01–07 o’zgarmaydi.
+  // Bo’sh ko’rsatkichlar va butunlay bo’sh bo’limlar KP hamda PDF’da chiqmaydi.
   const p1 = [hero({ state, q, logoSrc }), keyNumbers(), statusSection('01', state), opportunitySection('02', state, f)];
   const p2 = [featuresSection('03', q), compareSection('04')];
   const p3 = [priceSection('05', q), rolloutSection('06'), termsSection('07', state, q, rateMeta), nextStep()];

@@ -57,15 +57,15 @@ test('tur qidirish: 14 ta operator, 30 soniya, bron; Turvisor yo’q', () => {
   assert.ok(text.includes('Keyingi qadam') && text.includes('+998 77 177 13 19') && text.includes('omoncrm.uz'));
 });
 
-test('bo’sh maydon “—”, NaN/undefined/0 so’m chiqmaydi', () => {
+test('bo’sh maydonlar va hisoblanmagan qiymatlar KP’da chiqmaydi', () => {
   const empty = Object.fromEntries(Object.keys(defaultState()).map((k) => [k, '']));
   for (const state of [empty, { agents: '' }, { fx: '' }, { telephony: 'uztel', lines: '' }]) {
-    const { text } = kp(state);
+    const { html, text } = kp(state);
     assert.ok(!text.includes('NaN'), 'NaN');
     assert.ok(!text.includes('undefined'), 'undefined');
     assert.ok(!text.includes('null'), 'null');
     assert.doesNotMatch(text, /(^|[^\d ])0 so’m/);
-    assert.ok(text.includes('—'));
+    assert.doesNotMatch(html, />—<|× —|: —/);
   }
 });
 
@@ -73,4 +73,49 @@ test('foydalanuvchi matni HTML sifatida bajarilmaydi', () => {
   const { html } = kp({ agency: '<img src=x onerror=alert(1)>', owner: '"><script>x</script>' });
   assert.ok(!html.includes('<img src=x'));
   assert.ok(!html.includes('<script>'));
+});
+
+test('bo’sh bo’limlar sarlavhasi bilan yashiriladi', () => {
+  const { html, text } = kp({ employees: '  ', agents: '', date: '', validDays: '' });
+  for (const label of ['Agentlik holati', 'Qo’shimcha sotuv imkoniyati', 'Narx hisobi', 'Kimga', 'Amal qiladi']) {
+    assert.ok(!text.includes(label), label);
+  }
+  assert.ok(!html.includes('class="kp-metrics"'));
+  assert.ok(!html.includes('class="kp-opps"'));
+  assert.ok(!html.includes('class="kp-price"'));
+});
+
+test('qisman to’ldirilgan va nol ko’rsatkichlar saqlanadi', () => {
+  const { html, text } = kp({ employees: '', missed: '0' });
+  assert.equal((html.match(/class="kp-metric"/g) || []).length, 1);
+  assert.equal((html.match(/class="kp-opp"/g) || []).length, 1);
+  assert.ok(text.includes('lid oyiga ishlanmay qolmoqda'));
+  assert.ok(!text.includes('qo’shimcha bron oyiga'));
+  assert.ok(!text.includes('qo’shimcha sof foyda oyiga'));
+  assert.ok(!text.includes('tur qidirishda tejalgan vaqt oyiga'));
+});
+
+test('javob vaqti prognozsiz ham ko’rinadi; qiymat o’chirilsa yana yashiriladi', () => {
+  const filled = kp({ responseNow: '15', responseAfter: '5' }).html;
+  assert.ok(filled.includes('class="kp-inline-note"'));
+  assert.ok(!filled.includes('class="kp-opps"'));
+  assert.ok(!kp({ responseNow: '15', responseAfter: '' }).html.includes('class="kp-inline-note"'));
+});
+
+test('raqamlar soni bo’sh telefoniya qatori va hisoblanmagan jamilar yashiriladi', () => {
+  const { html } = kp({ ...FULL, lines: '  ' });
+  assert.ok(!html.includes('class="kp-total"'));
+  assert.ok(!html.includes('class="kp-grand"'));
+  assert.ok(!html.includes('Qo’ng’iroq yozuvi ·'));
+  assert.ok(!html.includes('MyZvanki (Moizvonki), Android uchun'));
+  assert.ok(html.includes('Omon CRM obunasi'));
+  assert.ok(html.includes('class="kp-setup"'));
+});
+
+test('noto’g’ri lidlar prognozi yashiriladi, mustaqil vaqt hisobi saqlanadi', () => {
+  const { text } = kp({ ...FULL, missed: '40' });
+  assert.ok(!text.includes('lid oyiga ishlanmay qolmoqda'));
+  assert.ok(!text.includes('qo’shimcha bron oyiga'));
+  assert.ok(!text.includes('qo’shimcha sof foyda oyiga'));
+  assert.ok(text.includes('tur qidirishda tejalgan vaqt oyiga'));
 });
