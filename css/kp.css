@@ -234,3 +234,45 @@
   .kp-section, .kp-feature, .kp-stat, .kp-metric, .kp-opp, .kp-big, .kp-steps li, .kp-cta, .kp-bonus, .kp-page tr { break-inside: avoid; page-break-inside: avoid; }
   a { color: inherit; text-decoration: none; }
 }
+
+
+/* Bo’limlar yagona oqimda: yashirilgan ma’lumot o’rnida bo’sh A4 qolmaydi. */
+.kp-pages {
+  gap: 0;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  box-shadow: var(--shadow-md);
+}
+.kp-page {
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.kp-page .kp-body { flex: none; }
+.kp-page + .kp-page .kp-body { padding-top: 26px; }
+.kp-page:not(:last-child) .kp-footer { display: none; }
+/* Sahifalar sonini endi brauzer tarkib hajmiga qarab belgilaydi. */
+.kp-footer-page { display: none; }
+.kp-footer { grid-template-columns: auto 1fr; }
+.kp-footer > span:nth-child(2) { justify-self: end; }
+
+@media print {
+  @page { size: A4; margin: 10mm 0; }
+  .kp-pages { border: 0; border-radius: 0; box-shadow: none; }
+  .kp-page {
+    display: block;
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+    break-after: auto;
+    page-break-after: auto;
+    break-inside: auto;
+    page-break-inside: auto;
+  }
+  .kp-page .kp-body { display: block; }
+  .kp-page .kp-body > * + * { margin-top: 26px; }
+  .kp-page[data-page="3"] .kp-body > * + * { margin-top: 14px; }
+  .kp-footer { break-inside: avoid; }
+}
