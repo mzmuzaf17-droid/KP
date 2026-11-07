@@ -305,9 +305,15 @@ function nextStep() {
 
 export function renderKp({ state, quote: q, forecast: f, rateMeta, logoSrc = '' }) {
   // Bo’sh ko’rsatkichlar va butunlay bo’sh bo’limlar KP hamda PDF’da chiqmaydi.
-  const p1 = [hero({ state, q, logoSrc }), keyNumbers(), statusSection('01', state), opportunitySection('02', state, f)];
-  const p2 = [featuresSection('03', q), compareSection('04')];
-  const p3 = [priceSection('05', q), rolloutSection('06'), termsSection('07', state, q, rateMeta), nextStep()];
+  let sectionNumber = 0;
+  const section = (render, ...args) => {
+    const html = render(String(sectionNumber + 1).padStart(2, '0'), ...args);
+    if (html) sectionNumber += 1;
+    return html;
+  };
+  const p1 = [hero({ state, q, logoSrc }), keyNumbers(), section(statusSection, state), section(opportunitySection, state, f)];
+  const p2 = [section(featuresSection, q), section(compareSection)];
+  const p3 = [section(priceSection, q), section(rolloutSection), section(termsSection, state, q, rateMeta), nextStep()];
 
   const page = (i, parts, cls = '') => `<div class="kp-page ${cls}" data-page="${i}"><div class="kp-body">${parts.join('')}</div>${pageFooter(i)}</div>`;
   return `<div class="kp-pages">${page(1, p1, 'first')}${page(2, p2)}${page(3, p3)}</div>`;
