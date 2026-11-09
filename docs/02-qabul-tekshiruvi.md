@@ -41,3 +41,13 @@ Tekshiruv: 2026-11-06. Avtomatik testlar `npm test` (Node, 24 ta), brauzer teksh
 3. PDF 3 bet bo’lishi va 3-betning pastidagi “Keyingi qadam” bloki va sahifa raqami “3 / 3” sig’ishi kerak.
 
 Eski Safari versiyalari `@page { margin: 0 }` ni e’tiborsiz qoldirishi mumkin; shunda chegaralarni chop etish oynasida qo’lda “Yo’q” qilish kerak.
+
+## 2026-11-09 o’zgarishlari (buyurtmachi talabi bilan, TZ’dan farqli)
+
+| O’zgarish | Tekshiruv |
+|---|---|
+| AI chatbot oyma-oy: obuna jamiga va “O’rtacha oyiga”ga kirmaydi, KP’da alohida “399 000 so’m / oy” qatori. Nazorat misoli endi: obuna 14 280 000, oyiga 1 190 000 | ✅ `tests/quote.test.js`, `tests/kp.test.js` |
+| Bo’sh ko’rsatkich “—” emas, butunlay chiqmaydi; bo’sh 01/02 bo’limlar tushib qoladi, raqamlash 01 dan; bo’limlar uzluksiz oqimda, PDF’da betlarni brauzer taqsimlaydi | ✅ `tests/kp.test.js`; Chromium’da 4 xil holat — har biri 3 bet, bloklar kesilmaydi |
+| PDF’da oxirgi bet pastidagi qator alohida 4-betga tushib qolardi — chop etishda yashirildi (kontaktlar “Keyingi qadam”da) | ✅ Chromium PDF |
+| Ijrochi tahrirlanadi, “Yangi” taklifda saqlanadi; eski yozuvlardagi `manager` ijrochiga o’tadi | ✅ `tests/storage.test.js`, brauzerda |
+| Agentlik logotipi tepada Omon CRM yonida | ✅ `tests/kp.test.js`, brauzerda |

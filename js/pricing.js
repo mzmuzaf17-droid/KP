@@ -5,7 +5,7 @@ export const PRICING = Object.freeze({
   crmPerAgentMonth: 189_000, // so’m / agent / oy
   bonusMonths: Object.freeze({ 6: 1, 12: 3 }), // faqat CRM obunasiga
   setupUsd: (agents) => (agents <= 3 ? 200 : agents <= 5 ? 300 : 400),
-  chatbot: Object.freeze({ none: 0, c500: 399_000, c1000: 499_000 }), // so’m / oy
+  chatbot: Object.freeze({ none: 0, c500: 399_000, c1000: 499_000 }), // so’m / oy, oyma-oy to’lanadi (obuna jamiga kirmaydi)
   telephony: Object.freeze({ none: 0, myzvanki: 49_000, uztel: 110_000 }), // so’m / raqam / oy
 });
 
@@ -30,6 +30,7 @@ export function setupTierLabel(agents) {
   return '6 va undan ko’p agent';
 }
 
+/** Standart ijrochi (formada o’zgartirish mumkin) va kompaniya sayti. */
 export const SELLER = Object.freeze({
   name: 'Muzaffar Mirkhamidov',
   shortName: 'Muzaffar',

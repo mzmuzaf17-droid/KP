@@ -89,9 +89,6 @@ select { appearance: none; padding-right: 34px; background-image: linear-gradien
 .logo-actions { display: grid; gap: var(--s2); min-width: 0; }
 .logo-actions input[type="file"] { max-width: 100%; font-size: 13px; }
 
-.seller { display: flex; align-items: center; gap: var(--s3); padding: var(--s3); border-radius: var(--radius-sm); background: var(--brand-soft); color: var(--brand-700); }
-.seller b { display: block; color: var(--ink); font-size: 13px; }
-.seller small { color: var(--muted); font-size: 12px; }
 
 .summary { margin: 0; display: grid; grid-template-columns: 1fr auto; gap: 6px var(--s3); padding: var(--s3) var(--s4); border-radius: var(--radius-sm); background: var(--navy); color: var(--white); font-size: 13px; }
 .summary dt { color: var(--on-dark-muted); }

@@ -8,7 +8,7 @@ import { PRICING, TERMS } from './pricing.js';
  * @typedef {{ agents: number|null, months: 6|12, lines: number,
  *   telephonyType: string, chatbotType: string,
  *   crmMonthly: number|null, telephonyMonthly: number|null, chatbotMonthly: number,
- *   crm: number|null, telephony: number|null, chatbot: number,
+ *   crm: number|null, telephony: number|null,
  *   subscriptionTotal: number|null, avgMonthly: number|null,
  *   setupUsd: number|null, setupUzs: number|null, grandTotal: number|null,
  *   bonusMonths: number, usageMonths: number, crmMonthlyWithBonus: number|null }} Quote
@@ -61,10 +61,10 @@ export function calculateQuote(input = {}) {
   }
   const telephony = telephonyMonthly === null ? null : telephonyMonthly * months;
 
+  // AI chatbot oyma-oy to’lanadi: oldindan to’lanadigan obuna summasiga qo’shilmaydi.
   const chatbotMonthly = PRICING.chatbot[chatbotType];
-  const chatbot = chatbotMonthly * months;
 
-  const subscriptionTotal = sum(crm, telephony, chatbot);
+  const subscriptionTotal = sum(crm, telephony);
   const avgMonthly = subscriptionTotal === null ? null : Math.round(subscriptionTotal / months);
 
   const setupUsd = agents === null ? null : PRICING.setupUsd(agents);
@@ -75,7 +75,7 @@ export function calculateQuote(input = {}) {
   return {
     agents, months, lines, telephonyType, chatbotType, usdRate: rate,
     crmMonthly, telephonyMonthly, chatbotMonthly,
-    crm, telephony, chatbot,
+    crm, telephony,
     subscriptionTotal, avgMonthly,
     setupUsd, setupUzs, grandTotal,
     bonusMonths, usageMonths, crmMonthlyWithBonus,
