@@ -218,8 +218,8 @@ function priceSection(num, q) {
 
   const bonusBlocks = Array.from({ length: q.usageMonths }, (_, i) => `<i class="${i < M ? 'paid' : 'free'}"></i>`).join('');
   const perMonth = q.crmMonthlyWithBonus !== null
-    ? ` Shunda ${q.agents} agentli jamoa uchun CRM oyiga ${keep(fmtUzs(q.crmMonthlyWithBonus))}ga tushadi.`
-    : '';
+    ? `: CRM oyiga ${keep(fmtUzs(q.crmMonthlyWithBonus))}ga tushadi.`
+    : '.';
 
   return `<section class="kp-section">
     ${sectionHead(num, 'Narx hisobi', title)}
@@ -228,19 +228,14 @@ function priceSection(num, q) {
       <thead><tr><th scope="col">Xizmat</th><th scope="col">Hisob</th><th scope="col" class="num">${M} oyga, so’m</th></tr></thead>
       <tbody>
         ${rows.map((r) => `<tr><th scope="row"><b>${r.title}</b><small>${r.sub}</small></th><td>${r.calc}</td><td class="num">${r.value}</td></tr>`).join('')}
-        ${isNum(q.subscriptionTotal) ? `<tr class="kp-total"><th scope="row"><b>Jami obuna${q.telephonyType !== 'none' ? ' va telefoniya' : ''}</b></th><td>${M} oy uchun</td><td class="num">${fmtInt(q.subscriptionTotal)}</td></tr>` : ''}
+        ${isNum(q.subscriptionTotal) ? `<tr class="kp-total"><th scope="row"><b>Jami obuna${q.telephonyType !== 'none' ? ' va telefoniya' : ''}</b>${isNum(q.avgMonthly) ? `<small>O’rtacha oyiga ${keep(fmtUzs(q.avgMonthly))}</small>` : ''}</th><td>${M} oy uchun</td><td class="num">${fmtInt(q.subscriptionTotal)}<small>so’m</small></td></tr>` : ''}
         ${botRow}
         ${isNum(q.setupUsd) ? `<tr class="kp-setup"><th scope="row"><b>O’rnatish va integratsiya</b><small>Bir martalik to’lov, 2 kunda bajariladi</small></th><td>${setupCalc}</td><td class="num">${fmtUsd(q.setupUsd)}${q.setupUzs !== null ? `<small>${fmtInt(q.setupUzs)} so’m</small>` : ''}</td></tr>` : ''}
         ${grand !== DASH ? `<tr class="kp-grand"><th scope="row"><b>Umumiy to’lov</b></th><td>Obuna va o’rnatish birga</td><td class="num">${grand}</td></tr>` : ''}
       </tbody>
     </table></div>
-    ${isNum(q.subscriptionTotal) || isNum(q.setupUsd) ? `<div class="kp-bigs">
-      ${isNum(q.subscriptionTotal) ? `<div class="kp-big primary"><span>${M} oyga jami</span><strong>${big(q.subscriptionTotal)}</strong></div>` : ''}
-      ${isNum(q.avgMonthly) ? `<div class="kp-big"><span>O’rtacha oyiga</span><strong>${big(q.avgMonthly)}</strong></div>` : ''}
-      ${isNum(q.setupUsd) ? `<div class="kp-big"><span>Bir martalik o’rnatish</span><strong>${fmtUsd(q.setupUsd)}</strong></div>` : ''}
-    </div>` : ''}
     <div class="kp-bonus">
-      <p><b>CRM obunasiga ${q.bonusMonths} oy bepul qo’shiladi.</b> ${M} oy uchun to’laysiz, CRM’dan ${q.usageMonths} oy foydalanasiz.${perMonth}</p>
+      <p><b>+${q.bonusMonths} oy bepul.</b> ${M} oy to’laysiz, CRM’dan ${q.usageMonths} oy foydalanasiz${perMonth}</p>
       <div class="kp-bonus-chart" role="img" aria-label="${M} oy to’lanadi, ${q.bonusMonths} oy bepul">
         <div class="kp-bonus-blocks">${bonusBlocks}</div>
         <div class="kp-bonus-legend"><span><i class="paid"></i>To’lanadigan oy</span><span><i class="free"></i>Bepul oy</span></div>
