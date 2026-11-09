@@ -52,3 +52,13 @@ Eski Safari versiyalari `@page { margin: 0 }` ni e’tiborsiz qoldirishi mumkin;
 | Ijrochi tahrirlanadi, “Yangi” taklifda saqlanadi; eski yozuvlardagi `manager` ijrochiga o’tadi | ✅ `tests/storage.test.js`, brauzerda |
 | Agentlik logotipi tepada Omon CRM yonida | ✅ `tests/kp.test.js`, brauzerda |
 | Taqqoslash (Bitrix24 / amoCRM) bo’limi olib tashlandi; to’liq KP endi 01–06 bo’lim | ✅ `tests/kp.test.js`; Chromium PDF: to’liq 3 bet, bo’sh bo’limlarsiz 2 bet |
+
+## 2026-11-09: interfeys (UX) yangilanishi
+
+| O’zgarish | Tekshiruv |
+|---|---|
+| Takliflar paneli (qidiruv, ochish, nusxa, nomi bilan o’chirishni tasdiqlash, zaxira), saqlash holati, Ctrl+S | ✅ Chromium: panel fokusni ushlaydi, Esc yopadi, fokus tugmaga qaytadi |
+| Saqlanmagan o’zgarishlarni yo’qotishdan oldin so’rash (yangi taklif, boshqa taklifni ochish) | ✅ Chromium |
+| Maydon xatolari blur’da, yozganda yo’qoladi; xabarlar ayblamaydi va yo’l ko’rsatadi | ✅ `tests/validate.test.js`, Chromium |
+| 375 px: Forma / KP almashtirgichi, gorizontal aylantirish yo’q; telefondan PDF KP’ni chop etadi | ✅ Chromium |
+| Tugmalar ≥ 44 px, kiritish matni 16 px, interfeysda 3 ta qalinlik, reduced-motion | ✅ Chromium o’lchovi |

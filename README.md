@@ -49,6 +49,16 @@ Testlar (Node 20+): `npm test`
 - Ijrochi (ism, telefon) formada tahrirlanadi; standart — Muzaffar Mirkhamidov. “Yangi” taklifda ijrochi saqlanib qoladi.
 - Agentlik logotipi KP tepasida, Omon CRM yonida kichik oq plashkada chiqadi.
 
+## Ish oqimi (interfeys)
+
+- **Takliflar** tugmasi o’ng tomondan panel ochadi: qidiruv, ochish, nusxa yaratish, o’chirish (qatorning o’zida
+  nomi bilan tasdiqlanadi), JSON zaxira yuklab olish va tiklash.
+- Yuqori panelda saqlash holati: “Yangi taklif” / “Saqlanmagan o’zgarishlar” / “Saqlangan · vaqt”. Ctrl+S (Mac’da ⌘S) saqlaydi.
+- Saqlanmagan o’zgarish bor paytda yangi yoki boshqa taklif ochilsa, avval so’raladi.
+- Maydon xatosi maydondan chiqqanda ko’rsatiladi va yozish boshlanishi bilan yo’qoladi; turagentlik nomi faqat saqlashda talab qilinadi.
+- Telefon va planshetda “Forma / KP ko’rinishi” almashtirgichi; PDF har qanday holatda KP’ni chop etadi.
+- Tugmalar kamida 44 px, kiritish maydonlari 16 px (iPhone’da sahifa kattalashmaydi), `prefers-reduced-motion` hurmat qilinadi.
+
 ## Saqlangan takliflar
 
 localStorage kalitlari eski sayt bilan bir xil (`omon-kp-v1`, `omon-kp-draft-v1`), shuning uchun shu domendagi
