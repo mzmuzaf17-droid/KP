@@ -174,25 +174,6 @@ function featuresSection(num, q) {
   </section>`;
 }
 
-function compareSection(num) {
-  const ok = (t) => `<span class="kp-yes">${icon('circle-check', { size: 15 })}${t}</span>`;
-  const rows = [
-    ['Turizm uchun moslashganmi', ok('Ha, maxsus qurilgan'), 'Yo’q, universal', 'Yo’q, universal'],
-    ['Tur qidirish va bron', ok('Ha, 14 ta operator'), 'Yo’q', 'Yo’q'],
-    ['Interfeys tili', 'Xohlagan til', 'Rus, ingliz', 'Rus, ingliz'],
-    ['Joriy etish muddati', '2 kun', '1–4 hafta', '1–8 hafta'],
-    ['O’zbek tilida yordam', 'To’g’ridan-to’g’ri', 'Hamkor orqali', 'Hamkor orqali'],
-  ];
-  return `<section class="kp-section">
-    ${sectionHead(num, 'Taqqoslash', 'Nega aynan Omon CRM')}
-    <div class="kp-table-wrap"><table class="kp-compare">
-      <thead><tr><th scope="col">Mezon</th><th scope="col" class="omon">Omon CRM</th><th scope="col">Bitrix24</th><th scope="col">amoCRM</th></tr></thead>
-      <tbody>${rows.map(([a, b, c, d]) => `<tr><th scope="row">${a}</th><td class="omon">${b}</td><td>${c}</td><td>${d}</td></tr>`).join('')}</tbody>
-    </table></div>
-    <p class="kp-disclaimer">${icon('shield-check', { size: 14 })}Har bir firmaning ma’lumotlari boshqalaridan ajratilgan (multi-tenant). Rollar: admin, menejer va agent.</p>
-  </section>`;
-}
-
 /* ---------------- narx va keyingi qadam ---------------- */
 
 const TELEPHONY_ROW = {
@@ -345,7 +326,7 @@ export function renderKp({ state, quote: q, forecast: f, rateMeta, logoSrc = '' 
     status.length ? section(statusSection, status) : '',
     opps.length || reply ? section(opportunitySection, opps, reply) : '',
   ];
-  const p2 = [section(featuresSection, q), section(compareSection)];
+  const p2 = [section(featuresSection, q)];
   const p3 = [section(priceSection, q), section(rolloutSection), section(termsSection, state, q, rateMeta, opps.length > 0), nextStep(state)];
 
   const s = seller(state);

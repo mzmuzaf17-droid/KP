@@ -22,22 +22,23 @@ const FULL = {
 const pages = (html) => (html.match(/class="kp-page /g) || []).length;
 const section = (html, num) => (html.match(new RegExp(`<span>${num}</span>([^<]+)</p>`)) || [])[1];
 
-test('KP 3 betdan iborat, to’liq ma’lumotda bo’limlar 01–07', () => {
+test('to’liq ma’lumotda bo’limlar 01–06, taqqoslash yo’q', () => {
   const { html } = kp(FULL);
   assert.equal(pages(html), 3);
   assert.equal(section(html, '01'), 'Agentlik holati');
   assert.equal(section(html, '02'), 'Qo’shimcha sotuv imkoniyati');
   assert.equal(section(html, '03'), 'Nima olasiz');
-  assert.equal(section(html, '07'), 'Shartlar');
+  assert.equal(section(html, '04'), 'Narx hisobi');
+  assert.equal(section(html, '06'), 'Shartlar');
+  assert.equal(section(html, '07'), undefined);
 });
 
 test('agentlik holati va qo’shimcha sotuv kiritilmasa, KP 01 “Nima olasiz” dan boshlanadi', () => {
   const { html, text } = kp({ agency: 'Samo Travel', agents: '3' });
   assert.equal(pages(html), 3);
   assert.equal(section(html, '01'), 'Nima olasiz');
-  assert.equal(section(html, '02'), 'Taqqoslash');
-  assert.equal(section(html, '03'), 'Narx hisobi');
-  assert.equal(section(html, '05'), 'Shartlar');
+  assert.equal(section(html, '02'), 'Narx hisobi');
+  assert.equal(section(html, '04'), 'Shartlar');
   assert.ok(!text.includes('Agentlik holati'));
   assert.ok(!text.includes('Qo’shimcha sotuv'));
   assert.ok(!text.includes('prognoz'));
@@ -118,7 +119,7 @@ test('tur qidirish: 14 ta operator, 30 soniya, bron; Turvisor yo’q', () => {
   assert.ok(/[Bb]ron/.test(text));
   assert.ok(!/turvisor/i.test(text));
   assert.ok(text.includes('20+'));
-  assert.ok(text.includes('Bitrix24') && text.includes('amoCRM'));
+  assert.ok(!/Taqqoslash|Bitrix24|amoCRM/.test(text), 'taqqoslash bo’limi olib tashlangan');
   assert.ok(text.includes('Keyingi qadam') && text.includes('+998 77 177 13 19') && text.includes('omoncrm.uz'));
 });
 
