@@ -51,3 +51,4 @@ Eski Safari versiyalari `@page { margin: 0 }` ni e’tiborsiz qoldirishi mumkin;
 | PDF’da oxirgi bet pastidagi qator alohida 4-betga tushib qolardi — chop etishda yashirildi (kontaktlar “Keyingi qadam”da) | ✅ Chromium PDF |
 | Ijrochi tahrirlanadi, “Yangi” taklifda saqlanadi; eski yozuvlardagi `manager` ijrochiga o’tadi | ✅ `tests/storage.test.js`, brauzerda |
 | Agentlik logotipi tepada Omon CRM yonida | ✅ `tests/kp.test.js`, brauzerda |
+| Taqqoslash (Bitrix24 / amoCRM) bo’limi olib tashlandi; to’liq KP endi 01–06 bo’lim | ✅ `tests/kp.test.js`; Chromium PDF: to’liq 3 bet, bo’sh bo’limlarsiz 2 bet |

@@ -102,12 +102,6 @@
 .kp-page tr { break-inside: avoid; }
 .kp-page thead th { padding: 11px 16px; background: var(--bg); color: var(--muted); font-size: 9.5px; font-weight: 700; letter-spacing: 1.3px; text-transform: uppercase; }
 
-.kp-compare tbody th, .kp-compare td { padding: 11px 16px; border-top: 1px solid var(--line); font-size: 11.5px; }
-.kp-compare tbody th { font-weight: 600; }
-.kp-compare td { color: var(--muted); }
-.kp-compare thead th.omon { background: var(--brand); color: var(--white); }
-.kp-compare td.omon { background: var(--brand-soft); color: var(--brand-700); font-weight: 700; }
-.kp-yes { display: inline-flex; align-items: center; gap: 6px; }
 
 /* 05 Narx hisobi */
 .kp-chips { list-style: none; margin: 0 0 14px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
@@ -168,10 +162,9 @@
 .kp-cta-card strong { display: flex; align-items: center; gap: 10px; color: var(--brand); font-size: 20px; font-weight: 800; letter-spacing: -.3px; white-space: nowrap; }
 .kp-cta-card span { display: flex; justify-content: space-between; gap: var(--s4); font-size: 11.5px; }
 
-/* Bo’sh joyi ko’p bet (Nima olasiz + Taqqoslash): kartochkalar kengroq */
+/* Bo’sh joyi ko’p bet (Nima olasiz): kartochkalar kengroq */
 .kp-page.airy .kp-body { gap: 34px; }
 .kp-page.airy .kp-feature { padding: 22px 20px; }
-.kp-page.airy .kp-compare tbody th, .kp-page.airy .kp-compare td { padding-top: 14px; padding-bottom: 14px; }
 
 /* Narx hisobi turgan bet: bitta A4 ga sig’ishi uchun zichroq */
 .kp-page.dense .kp-body { gap: 14px; padding-top: 28px; }
@@ -212,7 +205,6 @@
   .kp-metrics, .kp-opps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .kp-section-head h2 { font-size: 21px; }
   .kp-table-wrap { overflow-x: auto; }
-  .kp-compare { min-width: 520px; }
   .kp-price thead th:nth-child(2), .kp-price td:nth-child(2) { display: none; }
   .kp-price tbody th, .kp-price td, .kp-page thead th { padding-left: 12px; padding-right: 12px; }
   .kp-bonus { grid-template-columns: minmax(0, 1fr); }
