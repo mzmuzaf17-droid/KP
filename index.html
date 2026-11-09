@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#061133">
-<meta name="description" content="Omon CRM — turagentliklar uchun tijorat taklifi konstruktori: avtomatik narx hisobi va 3 betlik A4 PDF">
+<meta name="description" content="Omon CRM — turagentliklar uchun tijorat taklifi konstruktori: avtomatik narx hisobi va A4 PDF">
 <title>Omon CRM · Tijorat taklifi</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="assets/fonts/plus-jakarta-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
@@ -14,92 +14,105 @@
 <link rel="stylesheet" href="css/app.css">
 <link rel="stylesheet" href="css/kp.css">
 </head>
-<body>
+<body data-pane="form">
 <header class="topbar">
   <div class="topbar-inner">
     <a class="topbar-brand" href="./" aria-label="Omon CRM · Tijorat taklifi">
       <span class="topbar-mark" data-logo></span>
-      <span><strong>Omon CRM</strong><small>Tijorat taklifi konstruktori</small></span>
+      <span class="topbar-name"><strong>Omon CRM</strong><small>Tijorat taklifi konstruktori</small></span>
     </a>
+    <p class="save-status" id="saveStatus" data-state="new" aria-live="polite"></p>
     <div class="toolbar" role="toolbar" aria-label="KP amallari">
-      <button class="btn ghost" type="button" id="viewToggle" aria-pressed="false"><span data-icon="eye"></span><span class="btn-label">Mijozga ko’rsatish</span></button>
-      <button class="btn ghost hide-sm" type="button" id="copyText"><span data-icon="copy"></span><span class="btn-label">Matnni nusxalash</span></button>
-      <button class="btn ghost" type="button" id="saveTop"><span data-icon="save"></span><span class="btn-label">Saqlash</span></button>
-      <button class="btn primary" type="button" id="printPdf"><span data-icon="file-down"></span><span class="btn-label">PDF chiqarish</span></button>
+      <button class="btn ghost collapsible" type="button" id="openLibrary" aria-haspopup="dialog" aria-controls="library" data-tip="Saqlangan takliflar">
+        <span data-icon="folder-open"></span><span class="btn-label">Takliflar</span><span class="count" id="savedCount" hidden></span>
+      </button>
+      <button class="btn ghost collapsible" type="button" id="newQuote" data-tip="Yangi taklif ochish"><span data-icon="plus"></span><span class="btn-label">Yangi taklif</span></button>
+      <button class="btn ghost icon-only hide-sm" type="button" id="copyText" aria-label="Taklif matnini nusxalash" data-tip="Taklif matnini nusxalash"><span data-icon="copy"></span></button>
+      <button class="btn ghost collapsible" type="button" id="viewToggle" aria-pressed="false" data-tip="Mijozga ko’rsatish"><span data-icon="eye"></span><span class="btn-label">Mijozga ko’rsatish</span></button>
+      <button class="btn ghost collapsible" type="button" id="saveTop" data-tip="Saqlash"><span data-icon="save"></span><span class="btn-label">Saqlash</span></button>
+      <button class="btn primary" type="button" id="printPdf" aria-label="PDF chiqarish"><span data-icon="file-down"></span><span class="btn-label">PDF<span class="hide-xs"> chiqarish</span></span></button>
     </div>
   </div>
 </header>
 
+<div class="pane-switch" role="tablist" aria-label="Ko’rinish">
+  <button type="button" role="tab" id="tabForm" aria-controls="editor" aria-selected="true">Forma</button>
+  <button type="button" role="tab" id="tabKp" aria-controls="previewPane" aria-selected="false">KP ko’rinishi</button>
+</div>
+
 <main class="workspace">
-  <form class="editor" id="editor" autocomplete="off" novalidate>
+  <form class="editor" id="editor" role="tabpanel" aria-labelledby="tabForm" autocomplete="off" novalidate>
     <div class="editor-head">
       <h1>Taklifni tayyorlash</h1>
-      <p>Maydonlarni to’ldiring — o’ngdagi KP darhol yangilanadi. Bo’sh qolgan ko’rsatkichlar KP’da “—” bo’lib chiqadi.</p>
+      <p>Maydonlarni to’ldiring — KP darhol yangilanadi. Bo’sh qoldirilgan ko’rsatkichlar KP’ga chiqmaydi.</p>
+      <p class="save-status inline" id="saveStatusInline" data-state="new" aria-hidden="true"></p>
     </div>
 
     <details class="card" open>
-      <summary><span class="step">01</span>Turagentlik va ijrochi</summary>
+      <summary><span class="step">01</span><span class="sum-title">Turagentlik va ijrochi</span><span class="sum-meta" data-sum="client"></span></summary>
       <div class="fields">
         <div class="field full"><label for="agency">Turagentlik nomi</label><input id="agency" data-key="agency" placeholder="Masalan: Samo Travel" autocomplete="organization" maxlength="80"></div>
-        <div class="field full"><label for="owner">Rahbar F.I.Sh.</label><input id="owner" data-key="owner" placeholder="Rahbar ismi va familiyasi" maxlength="80"></div>
-        <div class="field"><label for="contact">Telefon</label><input id="contact" data-key="contact" placeholder="+998 90 123 45 67" inputmode="tel" maxlength="40"></div>
-        <div class="field"><label for="city">Hudud</label><input id="city" data-key="city" placeholder="Toshkent" maxlength="40"></div>
+        <div class="field full"><label for="owner">Rahbar F.I.Sh.</label><input id="owner" data-key="owner" placeholder="Masalan: Alisher Karimov" maxlength="80"></div>
+        <div class="field"><label for="contact">Telefon</label><input id="contact" data-key="contact" placeholder="+998 90 123 45 67" inputmode="tel" autocomplete="tel" maxlength="40"></div>
+        <div class="field"><label for="city">Hudud</label><input id="city" data-key="city" placeholder="Masalan: Toshkent" autocomplete="address-level1" maxlength="40"></div>
         <div class="field full logo-field">
-          <label for="logoFile">Turagentlik logotipi</label>
+          <span class="label" id="logoLabel">Turagentlik logotipi</span>
           <div class="logo-row">
             <div class="logo-thumb" id="logoThumb" hidden><img id="logoThumbImg" alt="Yuklangan logotip"></div>
-            <div class="logo-actions">
-              <input id="logoFile" type="file" accept="image/png,image/jpeg,image/webp,image/avif,image/gif">
-              <button class="btn small ghost" type="button" id="logoRemove" hidden><span data-icon="trash-2"></span>Logotipni olib tashlash</button>
+            <div class="btn-row">
+              <input class="sr-only" id="logoFile" type="file" accept="image/png,image/jpeg,image/webp,image/avif,image/gif" aria-labelledby="logoLabel logoPick">
+              <label class="btn ghost" for="logoFile" id="logoPick"><span data-icon="image-up"></span><span id="logoPickText">Logotip yuklash</span></label>
+              <button class="btn ghost danger" type="button" id="logoRemove" hidden><span data-icon="trash-2"></span>Olib tashlash</button>
             </div>
           </div>
-          <label class="check"><input type="checkbox" id="logoRemoveBackground" checked><span>Logotip atrofidagi qora yoki ko’k fonni olib tashlash</span></label>
-          <small class="hint">JPG, PNG, WebP, AVIF yoki GIF, 20 MB gacha. Rasm brauzerda kichraytiriladi, serverga yuborilmaydi.</small>
+          <label class="check" id="logoBgRow" hidden><input type="checkbox" id="logoRemoveBackground" checked><span>Logotip atrofidagi qora yoki ko’k fonni olib tashlash</span></label>
+          <small class="hint">KP tepasida, Omon CRM yonida chiqadi. JPG, PNG, WebP, AVIF yoki GIF, 20 MB gacha — rasm brauzerda kichraytiriladi.</small>
         </div>
         <div class="field"><label for="date">Taklif sanasi</label><input id="date" data-key="date" type="date"></div>
         <div class="field"><label for="validDays">Amal qilish muddati (kun)</label><input id="validDays" data-key="validDays" type="number" inputmode="numeric" min="1" max="90" step="1"></div>
-        <div class="field"><label for="sellerName">Ijrochi (KP’ni yuboruvchi)</label><input id="sellerName" data-key="sellerName" placeholder="Ism va familiya" autocomplete="name" maxlength="60"></div>
+        <div class="field"><label for="sellerName">Ijrochi</label><input id="sellerName" data-key="sellerName" placeholder="Masalan: Dilnoza Karimova" autocomplete="name" maxlength="60"></div>
         <div class="field"><label for="sellerPhone">Ijrochi telefoni</label><input id="sellerPhone" data-key="sellerPhone" placeholder="+998 90 123 45 67" inputmode="tel" autocomplete="tel" maxlength="40"></div>
-        <small class="hint full">KP’da “Kimdan”, “Keyingi qadam” va bet pastida shu ism va telefon chiqadi. “Yangi” taklif ochganda ijrochi saqlanib qoladi.</small>
+        <small class="hint full">Ijrochi KP’dagi “Kimdan” va “Keyingi qadam” bloklarida chiqadi va yangi taklif ochilganda saqlanib qoladi.</small>
       </div>
     </details>
 
     <details class="card" open>
-      <summary><span class="step">02</span>Lidlar va bron</summary>
+      <summary><span class="step">02</span><span class="sum-title">Lidlar va bron</span><span class="sum-meta" data-sum="leads"></span></summary>
       <div class="fields">
-        <div class="field"><label for="employees">Xodimlar soni</label><input id="employees" data-key="employees" type="number" inputmode="numeric" min="1" max="999"></div>
+        <p class="hint full">Ixtiyoriy. To’ldirilgan ko’rsatkichlar KP’dagi “Agentlik holati” va “Qo’shimcha sotuv” bloklariga chiqadi.</p>
+        <div class="field"><label for="employees">Xodimlar soni</label><input id="employees" data-key="employees" type="number" inputmode="numeric" min="1" max="999" placeholder="Masalan: 4"></div>
         <div class="field"><label for="workDays">Ish kunlari / oy</label><input id="workDays" data-key="workDays" type="number" inputmode="numeric" min="1" max="31"></div>
         <div class="field"><label for="leads">Kunlik lidlar</label><input id="leads" data-key="leads" type="number" inputmode="numeric" min="0" placeholder="Masalan: 30"></div>
         <div class="field"><label for="missed">Ishlanmay qoladigan lidlar / kun</label><input id="missed" data-key="missed" type="number" inputmode="numeric" min="0" placeholder="Masalan: 5"></div>
         <div class="field"><label for="recovery">Qayta ishlash ulushi (%)</label><input id="recovery" data-key="recovery" type="number" inputmode="numeric" min="0" max="100" placeholder="Masalan: 50"></div>
         <div class="field"><label for="conversion">Bron ehtimoli (%)</label><input id="conversion" data-key="conversion" type="number" inputmode="numeric" min="0" max="100" placeholder="Masalan: 25"></div>
         <div class="field full"><label for="profit">1 bronning sof foydasi (so’m)</label><input id="profit" data-key="profit" type="number" inputmode="numeric" min="0" step="1000" placeholder="Masalan: 800000"></div>
-        <p class="note full" id="leadWarning" hidden></p>
-        <p class="note full">Prognoz: ishlanmay qolgan lidlar × qayta ishlash ulushi × bron ehtimoli. Bu kafolat emas — raqamlarni rahbar bilan tasdiqlang.</p>
+        <p class="hint full">Prognoz: ishlanmay qolgan lidlar × qayta ishlash ulushi × bron ehtimoli. Bu kafolat emas — raqamlarni rahbar bilan tasdiqlang.</p>
       </div>
     </details>
 
     <details class="card">
-      <summary><span class="step">03</span>Ish jarayonlari va vaqt</summary>
+      <summary><span class="step">03</span><span class="sum-title">Ish jarayonlari va vaqt</span><span class="sum-meta" data-sum="time"></span></summary>
       <div class="fields">
+        <p class="hint full">Ixtiyoriy. Javob berish va tur qidirish vaqtini CRM bilan solishtirish uchun.</p>
         <div class="field"><label for="responseNow">Javob berish, hozir (daq.)</label><input id="responseNow" data-key="responseNow" type="number" inputmode="decimal" min="0" placeholder="Masalan: 15"></div>
         <div class="field"><label for="responseAfter">Javob berish, maqsad (daq.)</label><input id="responseAfter" data-key="responseAfter" type="number" inputmode="decimal" min="0" placeholder="Masalan: 5"></div>
         <div class="field"><label for="searchNow">Tur qidirish, hozir (daq.)</label><input id="searchNow" data-key="searchNow" type="number" inputmode="decimal" min="0" placeholder="Masalan: 20"></div>
-        <div class="field"><label for="searchAfter">Tur qidirish, CRM bilan (daq.)</label><input id="searchAfter" data-key="searchAfter" type="number" inputmode="decimal" min="0" step="0.5"><small class="hint">Standart: 0,5 daqiqa (30 soniya)</small></div>
+        <div class="field"><label for="searchAfter">Tur qidirish, CRM bilan (daq.)</label><input id="searchAfter" data-key="searchAfter" type="number" inputmode="decimal" min="0" step="0.5" aria-describedby="searchAfterHint"><small class="hint" id="searchAfterHint">Standart: 0,5 daqiqa (30 soniya)</small></div>
         <div class="field full"><label for="searches">Kunlik tur qidirishlar soni</label><input id="searches" data-key="searches" type="number" inputmode="numeric" min="0" placeholder="Masalan: 18"></div>
       </div>
     </details>
 
     <details class="card" open>
-      <summary><span class="step">04</span>Tariflar</summary>
+      <summary><span class="step">04</span><span class="sum-title">Tariflar</span><span class="sum-meta" data-sum="plan"></span></summary>
       <div class="fields">
-        <div class="field"><label for="agents">Agentlar soni</label><input id="agents" data-key="agents" type="number" inputmode="numeric" min="1" max="999"></div>
+        <div class="field"><label for="agents">Agentlar soni</label><input id="agents" data-key="agents" type="number" inputmode="numeric" min="1" max="999" placeholder="Masalan: 5"></div>
         <div class="field"><label for="months">Obuna muddati</label>
           <select id="months" data-key="months"><option value="6">6 oy (+1 oy bepul)</option><option value="12">12 oy (+3 oy bepul)</option></select></div>
         <div class="field"><label for="telephony">Telefoniya</label>
           <select id="telephony" data-key="telephony"><option value="none">Kerak emas</option><option value="myzvanki">MyZvanki · 49 000 / raqam</option><option value="uztel">UzTel · 110 000 / raqam</option></select></div>
-        <div class="field"><label for="lines">Raqamlar soni</label><input id="lines" data-key="lines" type="number" inputmode="numeric" min="1" max="999"></div>
-        <div class="field full"><label for="chatbot">AI chatbot</label>
+        <div class="field" id="linesField"><label for="lines">Raqamlar soni</label><input id="lines" data-key="lines" type="number" inputmode="numeric" min="1" max="999"></div>
+        <div class="field full"><label for="chatbot">AI chatbot (oyma-oy to’lanadi)</label>
           <select id="chatbot" data-key="chatbot"><option value="none">Kerak emas</option><option value="c500">500 ta mijoz · 399 000 / oy</option><option value="c1000">1 000 ta mijoz · 499 000 / oy</option></select></div>
         <div class="field full">
           <span class="label" id="setupLabel">O’rnatish va integratsiya</span>
@@ -109,40 +122,63 @@
         <div class="field full">
           <label for="fx">1 USD kursi (so’m)</label>
           <div class="input-with-btn">
-            <input id="fx" data-key="fx" type="number" inputmode="decimal" min="1" step="0.01">
-            <button class="btn small ghost" type="button" id="refreshRate"><span data-icon="refresh-cw"></span>Markaziy bank</button>
+            <input id="fx" data-key="fx" type="number" inputmode="decimal" min="1" step="0.01" aria-describedby="fxStatus">
+            <button class="btn ghost" type="button" id="refreshRate"><span data-icon="refresh-cw"></span>Kursni yangilash</button>
           </div>
           <small class="hint" id="fxStatus" aria-live="polite">Kurs tekshirilmoqda…</small>
         </div>
         <dl class="summary full" id="summary" aria-live="polite"></dl>
       </div>
     </details>
-
-    <details class="card" id="savedCard">
-      <summary><span class="step">05</span>Takliflarni saqlash</summary>
-      <div class="fields">
-        <div class="field full"><label for="savedSelect">Saqlangan takliflar</label><select id="savedSelect"><option value="">— Taklif tanlang —</option></select></div>
-        <div class="btn-row full">
-          <button class="btn primary small" type="button" id="saveQuote"><span data-icon="save"></span>Saqlash</button>
-          <button class="btn ghost small" type="button" id="newQuote"><span data-icon="plus"></span>Yangi</button>
-          <button class="btn ghost small danger" type="button" id="deleteQuote"><span data-icon="trash-2"></span>O’chirish</button>
-        </div>
-        <div class="btn-row full">
-          <button class="btn ghost small" type="button" id="exportJson"><span data-icon="download"></span>JSON zaxira yuklab olish</button>
-          <label class="btn ghost small file-btn" for="importJson"><span data-icon="upload"></span>JSON’dan tiklash</label>
-          <input class="sr-only" type="file" id="importJson" accept="application/json,.json">
-        </div>
-        <p class="note full">Takliflar faqat shu brauzerda saqlanadi va boshqa qurilmaga o’tmaydi. Zaxirani JSON qilib yuklab oling.</p>
-      </div>
-    </details>
-    <p class="editor-foot">Ma’lumotlar hech qayerga yuborilmaydi — faqat USD kursi Markaziy bankdan olinadi.</p>
+    <p class="editor-foot">Ma’lumotlar hech qayerga yuborilmaydi: takliflar shu brauzerda saqlanadi, faqat USD kursi Markaziy bankdan olinadi.</p>
   </form>
 
-  <section class="preview" aria-label="Mijozga beriladigan KP">
-    <div class="preview-head"><span>Mijozga beriladigan KP · A4, 3 bet</span><span class="live">Jonli hisob</span></div>
+  <section class="preview" id="previewPane" role="tabpanel" aria-labelledby="tabKp" aria-label="Mijozga beriladigan KP">
+    <div class="preview-head"><span>Mijozga beriladigan KP</span><span class="live">Jonli hisob</span></div>
     <div id="kp" class="kp"></div>
   </section>
 </main>
+
+<!-- Saqlangan takliflar: o’ng tomondan chiqadigan panel -->
+<div class="sheet" id="library" hidden>
+  <div class="sheet-backdrop" data-close></div>
+  <section class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="libraryTitle">
+    <header class="sheet-head">
+      <h2 id="libraryTitle">Saqlangan takliflar</h2>
+      <button class="btn ghost icon-only" type="button" data-close aria-label="Panelni yopish" data-tip="Yopish (Esc)"><span data-icon="x"></span></button>
+    </header>
+    <div class="sheet-search">
+      <label for="librarySearch">Qidirish</label>
+      <input id="librarySearch" type="search" placeholder="Masalan: Samo Travel" autocomplete="off">
+    </div>
+    <div class="sheet-notice" id="libraryNotice" role="alert" hidden></div>
+    <div class="sheet-body">
+      <ul class="quote-list" id="quoteList" aria-labelledby="libraryTitle"></ul>
+      <div class="empty" id="libraryEmpty" hidden></div>
+    </div>
+    <footer class="sheet-foot">
+      <div class="btn-row">
+        <button class="btn ghost" type="button" id="exportJson"><span data-icon="download"></span>Zaxirani yuklab olish</button>
+        <input class="sr-only" type="file" id="importJson" accept="application/json,.json" aria-label="JSON zaxiradan tiklash">
+        <label class="btn ghost" for="importJson"><span data-icon="upload"></span>Zaxiradan tiklash</label>
+      </div>
+      <p class="hint">Takliflar faqat shu brauzerda saqlanadi. Boshqa qurilmaga o’tkazish uchun zaxirani (JSON) yuklab oling.</p>
+    </footer>
+  </section>
+</div>
+
+<!-- Tasdiqlash oynasi (bir vaqtda faqat bitta) -->
+<div class="dialog-layer" id="confirm" hidden>
+  <div class="dialog-backdrop"></div>
+  <div class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle" aria-describedby="confirmBody">
+    <h2 id="confirmTitle"></h2>
+    <p id="confirmBody"></p>
+    <div class="dialog-actions">
+      <button class="btn ghost" type="button" id="confirmCancel">Bekor qilish</button>
+      <button class="btn destructive" type="button" id="confirmOk"></button>
+    </div>
+  </div>
+</div>
 
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 <script type="module" src="js/app.js"></script>
