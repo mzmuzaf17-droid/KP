@@ -1,5 +1,5 @@
 // Forma, saqlash, kurs va PDF. Hisob calculateQuote() da, KP renderKp() da.
-import { setupTierLabel, FALLBACK_USD_RATE, SELLER, TELEPHONY_LABELS, CHATBOT_LABELS } from './pricing.js';
+import { setupTierLabel, FALLBACK_USD_RATE, TELEPHONY_LABELS, CHATBOT_LABELS } from './pricing.js';
 import { calculateQuote, quoteInputFromState, leadForecast } from './quote.js';
 import { fmtUzs, fmtUsd, fmtDecimal, fmtDate, pdfFileName, DASH } from './format.js';
 import {
@@ -97,11 +97,11 @@ function render() {
   const rows = [
     [`CRM · ${q.months} oy`, fmtUzs(q.crm)],
     q.telephonyType !== 'none' ? [`${TELEPHONY_LABELS[q.telephonyType]} · ${q.lines} raqam`, fmtUzs(q.telephony)] : null,
-    q.chatbotType !== 'none' ? [`AI chatbot · ${CHATBOT_LABELS[q.chatbotType]}`, fmtUzs(q.chatbot)] : null,
     ['Obuna jami', fmtUzs(q.subscriptionTotal)],
     ['O’rtacha oyiga', fmtUzs(q.avgMonthly)],
     [`O’rnatish (${fmtUsd(q.setupUsd)})`, q.setupUzs === null ? (q.setupUsd === null ? DASH : 'kurs kiritilmagan') : fmtUzs(q.setupUzs)],
     ['Umumiy', fmtUzs(q.grandTotal), 'grand'],
+    q.chatbotType !== 'none' ? [`+ AI chatbot · ${CHATBOT_LABELS[q.chatbotType]}`, `${fmtUzs(q.chatbotMonthly)} / oy`] : null,
   ].filter(Boolean);
   $('summary').innerHTML = rows.map(([k, v, c = '']) => `<dt class="${c}">${k}</dt><dd class="${c}">${v}</dd>`).join('');
 
@@ -137,7 +137,8 @@ function saveQuote() {
 
 function newQuote() {
   if (!confirm('Yangi taklif ochilsinmi? Saqlanmagan o’zgarishlar yo’qoladi.')) return;
-  state = defaultState();
+  // Ijrochi o’zgarmaydi: har bir sotuvchi o’z ismini bir marta yozadi.
+  state = { ...defaultState(), sellerName: state.sellerName, sellerPhone: state.sellerPhone };
   selectedId = null;
   fillForm();
   refreshSavedList();
@@ -271,10 +272,11 @@ function quoteText() {
   const q = calculateQuote(quoteInputFromState(state));
   const lines = [`Omon CRM — tijorat taklifi${state.agency.trim() ? ` · ${state.agency.trim()}` : ''}`];
   if (state.owner.trim()) lines.push(`Kimga: ${state.owner.trim()}`);
-  lines.push(`Kimdan: ${SELLER.name}, ${SELLER.phone}`, '');
+  const from = [state.sellerName.trim(), state.sellerPhone.trim()].filter(Boolean).join(', ');
+  lines.push(`Kimdan: ${from || 'Omon CRM'}`, '');
   lines.push(`CRM: 189 000 × ${q.agents ?? DASH} agent × ${q.months} oy = ${fmtUzs(q.crm)} (+${q.bonusMonths} oy bepul, ${q.usageMonths} oy foydalanish)`);
   if (q.telephonyType !== 'none') lines.push(`${TELEPHONY_LABELS[q.telephonyType]}: ${q.lines} raqam × ${q.months} oy = ${fmtUzs(q.telephony)}`);
-  if (q.chatbotType !== 'none') lines.push(`AI chatbot (${CHATBOT_LABELS[q.chatbotType]}): ${q.months} oy = ${fmtUzs(q.chatbot)}`);
+  if (q.chatbotType !== 'none') lines.push(`AI chatbot (${CHATBOT_LABELS[q.chatbotType]}): ${fmtUzs(q.chatbotMonthly)} / oy, har oy alohida to’lanadi`);
   lines.push(`Obuna jami: ${fmtUzs(q.subscriptionTotal)} · o’rtacha oyiga ${fmtUzs(q.avgMonthly)}`);
   lines.push(`O’rnatish va integratsiya (bir martalik): ${fmtUsd(q.setupUsd)}${q.setupUzs !== null ? ` = ${fmtUzs(q.setupUzs)}` : ''}`);
   lines.push(`Umumiy: ${fmtUzs(q.grandTotal)}`);

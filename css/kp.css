@@ -40,13 +40,15 @@
 .kp-hero-logo { color: var(--white); }
 .kp-hero-logo .logo-word { font-size: 19px; }
 .kp-hero-pill { padding: 7px 16px; border: 1px solid var(--on-dark-line); border-radius: var(--radius-pill); font-size: 10.5px; font-weight: 700; letter-spacing: 1.6px; text-transform: uppercase; white-space: nowrap; }
-.kp-hero-main { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s6); align-items: center; margin: 46px 0 30px; }
-.kp-hero-main.with-logo { grid-template-columns: minmax(0, 1fr) 150px; }
+.kp-hero-main { margin: 46px 0 30px; }
 .kp-hero h1 { font-size: 39px; line-height: 1.08; font-weight: 800; letter-spacing: -1.1px; overflow-wrap: anywhere; }
 .kp-hero h1 span { display: block; color: var(--brand-300); }
 .kp-hero-lead { margin-top: 16px !important; max-width: 540px; color: var(--on-dark-muted); font-size: 13px; line-height: 1.55; }
-.kp-client-logo { width: 150px; height: 112px; padding: 14px; border-radius: var(--radius); background: var(--white); display: grid; place-items: center; box-shadow: 0 10px 30px rgba(0, 0, 0, .18); }
-.kp-client-logo img { max-width: 100%; max-height: 100%; object-fit: contain; }
+/* Agentlik logotipi: Omon CRM yonida kichik oq plashka (har qanday rangdagi logo ko’rinadi) */
+.kp-hero-brand { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.kp-hero-x { width: 1px; height: 30px; background: var(--on-dark-line); flex: none; }
+.kp-hero-partner { display: grid; place-items: center; height: 40px; max-width: 150px; padding: 5px 10px; border-radius: var(--radius-sm); background: var(--white); flex: none; }
+.kp-hero-partner img { max-height: 30px; max-width: 130px; width: auto; height: auto; object-fit: contain; }
 .kp-hero-meta { margin: 0; padding-top: 18px; border-top: 1px solid var(--on-dark-line); display: flex; flex-wrap: wrap; gap: 14px 40px; }
 .kp-hero-meta dt { color: var(--on-dark-muted); font-size: 9.5px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; margin-bottom: 4px; }
 .kp-hero-meta dd { margin: 0; font-size: 12.5px; font-weight: 700; line-height: 1.35; }
@@ -68,14 +70,14 @@
 .kp-section-head h2 { margin-top: 6px; font-size: 25px; line-height: 1.15; font-weight: 800; letter-spacing: -.7px; }
 
 /* 01 Agentlik holati */
-.kp-metrics { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+.kp-metrics { display: grid; grid-template-columns: repeat(var(--cols, 5), minmax(0, 1fr)); gap: 10px; }
 .kp-metric { padding: 12px 12px 13px; border: 1px solid var(--line); border-radius: var(--radius); break-inside: avoid; }
 .kp-metric .ic { color: var(--brand); }
 .kp-metric strong { display: block; margin-top: 8px; font-size: 19px; line-height: 1.15; font-weight: 800; letter-spacing: -.4px; }
 .kp-metric span { display: block; margin-top: 3px; color: var(--muted); font-size: 10.5px; line-height: 1.35; }
 
 /* 02 Qo’shimcha sotuv */
-.kp-opps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.kp-opps { display: grid; grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr)); gap: 10px; }
 .kp-opp { padding: 13px 14px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg); break-inside: avoid; }
 .kp-opp-top { display: flex; gap: 6px; align-items: flex-start; color: var(--muted); font-size: 10.5px; line-height: 1.35; min-height: 28px; }
 .kp-opp-top .ic { color: var(--brand); margin-top: 1px; }
@@ -119,7 +121,7 @@
 .kp-price td.num { color: var(--ink); font-size: 13px; font-weight: 800; }
 .kp-price tr.kp-total th, .kp-price tr.kp-total td { background: var(--brand); color: var(--white); border-top: 0; font-size: 13px; font-weight: 700; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 .kp-price tr.kp-total td.num { color: var(--white); font-size: 14px; }
-.kp-price tr.kp-setup th, .kp-price tr.kp-setup td { background: var(--bg); }
+.kp-price tr.kp-setup th, .kp-price tr.kp-setup td, .kp-price tr.kp-monthly th, .kp-price tr.kp-monthly td { background: var(--bg); }
 .kp-price tr.kp-grand td.num { color: var(--brand-700); font-size: 14px; }
 .kp-free { white-space: nowrap; font-style: normal; padding: 2px 8px; border-radius: var(--radius-pill); background: var(--accent-soft); color: var(--accent-ink); font-size: 10px; font-weight: 700; }
 
@@ -166,28 +168,28 @@
 .kp-cta-card strong { display: flex; align-items: center; gap: 10px; color: var(--brand); font-size: 20px; font-weight: 800; letter-spacing: -.3px; white-space: nowrap; }
 .kp-cta-card span { display: flex; justify-content: space-between; gap: var(--s4); font-size: 11.5px; }
 
-/* 2-bet: bo’sh joy ko’p — kartochkalar kengroq */
-.kp-page[data-page="2"] .kp-body { gap: 34px; }
-.kp-page[data-page="2"] .kp-feature { padding: 22px 20px; }
-.kp-page[data-page="2"] .kp-compare tbody th, .kp-page[data-page="2"] .kp-compare td { padding-top: 14px; padding-bottom: 14px; }
+/* Bo’sh joyi ko’p bet (Nima olasiz + Taqqoslash): kartochkalar kengroq */
+.kp-page.airy .kp-body { gap: 34px; }
+.kp-page.airy .kp-feature { padding: 22px 20px; }
+.kp-page.airy .kp-compare tbody th, .kp-page.airy .kp-compare td { padding-top: 14px; padding-bottom: 14px; }
 
-/* 3-bet: narx, joriy etish, shartlar va keyingi qadam bitta A4 ga sig’ishi uchun zichroq */
-.kp-page[data-page="3"] .kp-body { gap: 14px; padding-top: 28px; }
-.kp-page[data-page="3"] .kp-section-head { margin-bottom: 10px; }
-.kp-page[data-page="3"] .kp-section-head h2 { font-size: 24px; margin-top: 4px; }
-.kp-page[data-page="3"] .kp-chips { margin-bottom: 10px; }
-.kp-page[data-page="3"] thead th { padding-top: 8px; padding-bottom: 8px; }
+/* Narx hisobi turgan bet: bitta A4 ga sig’ishi uchun zichroq */
+.kp-page.dense .kp-body { gap: 14px; padding-top: 28px; }
+.kp-page.dense .kp-section-head { margin-bottom: 10px; }
+.kp-page.dense .kp-section-head h2 { font-size: 24px; margin-top: 4px; }
+.kp-page.dense .kp-chips { margin-bottom: 10px; }
+.kp-page.dense thead th { padding-top: 8px; padding-bottom: 8px; }
 .kp-price tbody th, .kp-price td { padding-top: 7px; padding-bottom: 7px; }
-.kp-page[data-page="3"] .kp-bigs, .kp-page[data-page="3"] .kp-bonus { margin-top: 10px; }
-.kp-page[data-page="3"] .kp-big { padding: 11px 16px; }
-.kp-page[data-page="3"] .kp-big strong { font-size: 23px; }
-.kp-page[data-page="3"] .kp-bonus { padding: 11px 16px; }
-.kp-page[data-page="3"] .kp-steps li { padding: 11px 14px; }
-.kp-page[data-page="3"] .kp-steps p { font-size: 10.5px; }
-.kp-page[data-page="3"] .kp-terms { gap: 2px; font-size: 10.5px; }
-.kp-page[data-page="3"] .kp-cta { padding: 16px 22px; }
-.kp-page[data-page="3"] .kp-cta h2 { font-size: 21px; }
-.kp-page[data-page="3"] .kp-footer { margin-top: 16px; }
+.kp-page.dense .kp-bigs, .kp-page.dense .kp-bonus { margin-top: 10px; }
+.kp-page.dense .kp-big { padding: 11px 16px; }
+.kp-page.dense .kp-big strong { font-size: 23px; }
+.kp-page.dense .kp-bonus { padding: 11px 16px; }
+.kp-page.dense .kp-steps li { padding: 11px 14px; }
+.kp-page.dense .kp-steps p { font-size: 10.5px; }
+.kp-page.dense .kp-terms { gap: 2px; font-size: 10.5px; }
+.kp-page.dense .kp-cta { padding: 16px 22px; }
+.kp-page.dense .kp-cta h2 { font-size: 21px; }
+.kp-page.dense .kp-footer { margin-top: 16px; }
 
 /* ---------- Telefon: bloklar bitta ustunga, bet balandligi erkin ---------- */
 @container (max-width: 600px) {
@@ -198,8 +200,12 @@
   .kp-hero-art { right: -260px; bottom: -280px; }
   .kp-hero-logo .logo-word { font-size: 16px; }
   .kp-hero-pill { padding: 5px 10px; font-size: 9px; letter-spacing: 1px; }
-  .kp-hero-main, .kp-hero-main.with-logo { grid-template-columns: minmax(0, 1fr); margin: 28px 0 20px; gap: var(--s4); }
-  .kp-client-logo { order: -1; width: 120px; height: 84px; }
+  .kp-hero-main { margin: 28px 0 20px; }
+  .kp-hero-top { flex-wrap: wrap; gap: var(--s3); }
+  .kp-hero-brand { gap: 10px; }
+  .kp-hero-x { height: 24px; }
+  .kp-hero-partner { height: 34px; padding: 4px 8px; }
+  .kp-hero-partner img { max-height: 26px; max-width: 100px; }
   .kp-hero h1 { font-size: 29px; }
   .kp-hero-meta { gap: 12px 24px; }
   .kp-stats, .kp-features, .kp-steps, .kp-bigs { grid-template-columns: minmax(0, 1fr); }
@@ -273,6 +279,14 @@
   }
   .kp-page .kp-body { display: block; }
   .kp-page .kp-body > * + * { margin-top: 26px; }
-  .kp-page[data-page="3"] .kp-body > * + * { margin-top: 14px; }
+  .kp-page.dense .kp-body > * + * { margin-top: 14px; }
   .kp-footer { break-inside: avoid; }
+}
+
+/* PDF: oqim rejimida pastki qator oxirgi betdan sirg’alib, alohida bo’sh betga tushib qolardi.
+   Kontaktlar “Keyingi qadam” kartochkasida bor, shuning uchun chop etishda u ko’rsatilmaydi.
+   1-betda ko’k sarlavha qog’oz tepasidan boshlanadi. */
+@media print {
+  @page :first { margin-top: 0; }
+  .kp-footer { display: none !important; }
 }

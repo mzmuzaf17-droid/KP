@@ -39,8 +39,15 @@ Testlar (Node 20+): `npm test`
 | CRM obunasi | 189 000 so’m / agent / oy × 6 yoki 12 oy |
 | Bonus | 6 oy → +1 oy, 12 oy → +3 oy (faqat CRM obunasiga) |
 | O’rnatish va integratsiya | $200 (1–3 agent), $300 (4–5), $400 (6+), bir martalik, avtomatik |
-| AI chatbot | 399 000 (500 mijoz) yoki 499 000 (1 000 mijoz) so’m / oy |
+| AI chatbot | 399 000 (500 mijoz) yoki 499 000 (1 000 mijoz) so’m / oy — oyma-oy to’lanadi, obuna jamiga kirmaydi |
 | Telefoniya | MyZvanki 49 000, UzTel 110 000 so’m / raqam / oy |
+
+## KP tarkibi
+
+- To’ldirilmagan ko’rsatkichlar KP’ga chiqmaydi. “Agentlik holati” va “Qo’shimcha sotuv” bo’sh bo’lsa, bu bo’limlar
+  tushib qoladi va KP “01 Nima olasiz” dan boshlanadi (raqamlash avtomatik).
+- Ijrochi (ism, telefon) formada tahrirlanadi; standart — Muzaffar Mirkhamidov. “Yangi” taklifda ijrochi saqlanib qoladi.
+- Agentlik logotipi KP tepasida, Omon CRM yonida kichik oq plashkada chiqadi.
 
 ## Saqlangan takliflar
 

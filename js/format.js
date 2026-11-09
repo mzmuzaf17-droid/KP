@@ -67,3 +67,9 @@ export function pdfFileName(agency, isoDate) {
   const date = /^\d{4}-\d{2}-\d{2}$/.test(String(isoDate ?? '')) ? isoDate : new Date().toISOString().slice(0, 10);
   return `OmonCRM_KP_${slug || 'turagentlik'}_${date}`;
 }
+
+/** "+998 77 177 13 19" → "tel:+998771771319" (raqam bo’lmasa bo’sh). */
+export function telHref(phone) {
+  const digits = String(phone ?? '').replace(/[^\d+]/g, '');
+  return digits.replace(/\D/g, '').length >= 7 ? `tel:${digits}` : '';
+}

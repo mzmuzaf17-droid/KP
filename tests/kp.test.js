@@ -19,10 +19,50 @@ const FULL = {
   leads: '30', missed: '5', recovery: '50', conversion: '25', profit: '800000', responseNow: '15', responseAfter: '5', searchNow: '20', searches: '18',
 };
 
-test('KP 3 betdan iborat', () => {
+const pages = (html) => (html.match(/class="kp-page /g) || []).length;
+const section = (html, num) => (html.match(new RegExp(`<span>${num}</span>([^<]+)</p>`)) || [])[1];
+
+test('KP 3 betdan iborat, to’liq ma’lumotda bo’limlar 01–07', () => {
   const { html } = kp(FULL);
-  assert.equal((html.match(/class="kp-page /g) || []).length, 3);
-  for (const n of ['01', '02', '03', '04', '05', '06', '07']) assert.ok(html.includes(`<span>${n}</span>`), n);
+  assert.equal(pages(html), 3);
+  assert.equal(section(html, '01'), 'Agentlik holati');
+  assert.equal(section(html, '02'), 'Qo’shimcha sotuv imkoniyati');
+  assert.equal(section(html, '03'), 'Nima olasiz');
+  assert.equal(section(html, '07'), 'Shartlar');
+});
+
+test('agentlik holati va qo’shimcha sotuv kiritilmasa, KP 01 “Nima olasiz” dan boshlanadi', () => {
+  const { html, text } = kp({ agency: 'Samo Travel', agents: '3' });
+  assert.equal(pages(html), 3);
+  assert.equal(section(html, '01'), 'Nima olasiz');
+  assert.equal(section(html, '02'), 'Taqqoslash');
+  assert.equal(section(html, '03'), 'Narx hisobi');
+  assert.equal(section(html, '05'), 'Shartlar');
+  assert.ok(!text.includes('Agentlik holati'));
+  assert.ok(!text.includes('Qo’shimcha sotuv'));
+  assert.ok(!text.includes('prognoz'));
+  assert.ok(text.includes('Quyida 3 agentli jamoangiz uchun narx hisobini'), 'sarlavha bet raqamiga bog’lanmagan');
+  assert.doesNotMatch(text, /\d-sahifada/);
+});
+
+test('faqat to’ldirilgan ko’rsatkichlar chiqadi, bo’sh kartochka yo’q', () => {
+  const { html, text } = kp({ employees: '4', leads: '30' });
+  assert.equal(section(html, '01'), 'Agentlik holati');
+  assert.equal(section(html, '02'), 'Nima olasiz');
+  assert.equal((html.match(/class="kp-metric"/g) || []).length, 2);
+  assert.ok(text.includes('xodim') && text.includes('lid kuniga'));
+  assert.ok(!text.includes('mijozga javob berish'));
+  assert.ok(!text.includes('bitta tur qidirish'));
+  assert.ok(!text.includes('—'), 'bo’sh qiymat “—” bo’lib ham chiqmaydi');
+});
+
+test('qo’shimcha sotuvda faqat hisoblanganlari chiqadi', () => {
+  const { html, text } = kp({ leads: '30', missed: '5' });
+  assert.equal(section(html, '02'), 'Qo’shimcha sotuv imkoniyati');
+  assert.equal((html.match(/class="kp-opp"/g) || []).length, 1);
+  assert.ok(text.includes('130 ta'));
+  assert.ok(!text.includes('qo’shimcha bron oyiga'));
+  assert.ok(!text.includes('tejalgan vaqt'));
 });
 
 test('12 oy tanlanganda “6 oy” yoki “+1 oy” qolmaydi', () => {
@@ -33,9 +73,34 @@ test('12 oy tanlanganda “6 oy” yoki “+1 oy” qolmaydi', () => {
   assert.ok(text.includes('15 oy'));
 });
 
-test('nazorat misoli KP’da to’g’ri chiqadi', () => {
-  const { text } = kp(FULL);
-  for (const s of ['11 340 000', '2 940 000', '4 788 000', '19 068 000', '1 589 000', '$300', '756 000']) assert.ok(text.includes(s), s);
+test('nazorat misoli KP’da to’g’ri chiqadi, chatbot oyma-oy', () => {
+  const { html, text } = kp(FULL);
+  for (const s of ['11 340 000', '2 940 000', '14 280 000', '1 190 000', '$300', '756 000', '399 000 so’m / oy']) assert.ok(text.includes(s), s);
+  assert.ok(!text.includes('4 788 000'), 'chatbot 12 oyga ko’paytirilmaydi');
+  assert.ok(!text.includes('19 068 000'));
+  assert.ok(text.includes('Har oy alohida to’lanadi'));
+  const total = html.slice(html.indexOf('class="kp-total"'), html.indexOf('</tr>', html.indexOf('class="kp-total"')));
+  assert.ok(total.includes('14 280 000'));
+});
+
+test('ijrochi formadan olinadi', () => {
+  const { text: def } = kp(FULL);
+  assert.ok(def.includes('Muzaffar Mirkhamidov') && def.includes('+998 77 177 13 19'));
+  const { html, text } = kp({ ...FULL, sellerName: 'Dilnoza Karimova', sellerPhone: '+998 90 111 22 33' });
+  assert.ok(text.includes('Dilnoza Karimova'));
+  assert.ok(text.includes('+998 90 111 22 33'));
+  assert.ok(html.includes('href="tel:+998901112233"'));
+  assert.ok(!text.includes('Muzaffar'));
+  assert.ok(!text.includes('+998 77 177 13 19'));
+});
+
+test('agentlik logotipi tepada, Omon CRM yonida', () => {
+  const logo = 'data:image/png;base64,iVBORw0KGgo=';
+  const state = { ...defaultState('2026-11-06'), agency: 'Samo Travel' };
+  const html = renderKp({ state, quote: calculateQuote(quoteInputFromState(state)), forecast: leadForecast(state), rateMeta: RATE, logoSrc: logo });
+  const top = html.slice(html.indexOf('class="kp-hero-top"'), html.indexOf('class="kp-hero-main"'));
+  assert.ok(top.includes('kp-hero-brand') && top.includes('Omon CRM') && top.includes(logo));
+  assert.equal(html.split(logo).length - 1, 1, 'logo bir marta chiqadi');
 });
 
 test('tanlanmagan telefoniya va chatbot narx jadvalida yo’q', () => {

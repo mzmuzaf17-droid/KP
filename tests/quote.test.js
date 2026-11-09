@@ -14,20 +14,21 @@ test('3 agent, 6 oy, telefoniya va chatbot yo’q, kurs 11 941,65', () => {
   assert.equal(q.usageMonths, 7);
   assert.equal(q.bonusMonths, 1);
   assert.equal(q.telephony, 0);
-  assert.equal(q.chatbot, 0);
+  assert.equal(q.chatbotMonthly, 0);
 });
 
-test('5 agent, 12 oy, MyZvanki 5 raqam, chatbot 500 (nazorat misoli)', () => {
+test('5 agent, 12 oy, MyZvanki 5 raqam, chatbot 500 — chatbot oyma-oy, jamiga kirmaydi', () => {
   const q = calculateQuote({ agents: 5, months: 12, telephony: 'myzvanki', lines: 5, chatbot: 'c500', usdRate: 12000 });
   assert.equal(q.crm, 11_340_000);
   assert.equal(q.telephony, 2_940_000);
-  assert.equal(q.chatbot, 4_788_000);
-  assert.equal(q.subscriptionTotal, 19_068_000);
-  assert.equal(q.avgMonthly, 1_589_000);
+  assert.equal(q.chatbotMonthly, 399_000);
+  assert.ok(!('chatbot' in q), 'chatbot uchun muddatga ko’paytirilgan summa yo’q');
+  assert.equal(q.subscriptionTotal, 14_280_000);
+  assert.equal(q.avgMonthly, 1_190_000);
   assert.equal(q.setupUsd, 300);
   assert.equal(q.usageMonths, 15);
   assert.equal(q.crmMonthlyWithBonus, 756_000);
-  assert.equal(q.grandTotal, 19_068_000 + 300 * 12000);
+  assert.equal(q.grandTotal, 14_280_000 + 300 * 12000);
 });
 
 test('o’rnatish narxi agentlar soniga qarab', () => {
@@ -41,8 +42,10 @@ test('o’rnatish narxi agentlar soniga qarab', () => {
   assert.equal(PRICING.setupUsd(6), 400);
 });
 
-test('chatbot 1 000 mijoz, 6 oy → 2 994 000', () => {
-  assert.equal(calculateQuote({ agents: 1, months: 6, chatbot: 'c1000' }).chatbot, 2_994_000);
+test('chatbot 1 000 mijoz → 499 000 / oy, muddatga ko’paytirilmaydi', () => {
+  const q = calculateQuote({ agents: 1, months: 6, chatbot: 'c1000' });
+  assert.equal(q.chatbotMonthly, 499_000);
+  assert.equal(q.subscriptionTotal, 189_000 * 6);
 });
 
 test('UzTel 2 raqam, 6 oy → 1 320 000', () => {
@@ -52,7 +55,7 @@ test('UzTel 2 raqam, 6 oy → 1 320 000', () => {
 test('bonus faqat CRM’ga: telefoniya va chatbot to’lov oylari bo’yicha', () => {
   const q = calculateQuote({ agents: 2, months: 12, telephony: 'myzvanki', lines: 1, chatbot: 'c500' });
   assert.equal(q.telephony, 49_000 * 12);
-  assert.equal(q.chatbot, 399_000 * 12);
+  assert.equal(q.subscriptionTotal, 189_000 * 2 * 12 + 49_000 * 12);
   assert.equal(q.crmMonthlyWithBonus, Math.round((189_000 * 2 * 12) / 15));
 });
 

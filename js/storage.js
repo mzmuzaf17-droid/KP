@@ -1,6 +1,6 @@
 // Saqlash: localStorage kalitlari eski sayt bilan bir xil, shuning uchun avval saqlangan
 // takliflar yangi saytda ham ko’rinadi. Har qanday yozuv o’qilganda migrateState() dan o’tadi.
-import { FALLBACK_USD_RATE, CRM_SEARCH_MINUTES } from './pricing.js';
+import { FALLBACK_USD_RATE, CRM_SEARCH_MINUTES, SELLER } from './pricing.js';
 
 export const SCHEMA_VERSION = 2;
 export const KEYS = Object.freeze({
@@ -15,7 +15,7 @@ const CHATBOT = ['none', 'c500', 'c1000'];
 const LEGACY_PHONE = { personal: 'myzvanki', company: 'uztel', none: 'none' };
 
 const TEXT_FIELDS = [
-  'agency', 'owner', 'contact', 'city', 'date', 'validDays',
+  'agency', 'owner', 'contact', 'city', 'date', 'validDays', 'sellerName', 'sellerPhone',
   'employees', 'workDays', 'leads', 'missed', 'recovery', 'conversion', 'profit',
   'responseNow', 'responseAfter', 'searchNow', 'searchAfter', 'searches',
   'agents', 'lines', 'fx',
@@ -32,7 +32,8 @@ export function defaultState(today = todayIso()) {
     agency: '', agencyImage: '', logoRemoveBackground: true,
     owner: '', contact: '', city: '',
     date: today, validDays: '7',
-    employees: '3', workDays: '26', leads: '', missed: '', recovery: '', conversion: '', profit: '',
+    sellerName: SELLER.name, sellerPhone: SELLER.phone,
+    employees: '', workDays: '26', leads: '', missed: '', recovery: '', conversion: '', profit: '',
     responseNow: '', responseAfter: '', searchNow: '', searchAfter: String(CRM_SEARCH_MINUTES), searches: '',
     agents: '3', months: '6', telephony: 'none', lines: '1', chatbot: 'none',
     fx: String(FALLBACK_USD_RATE.rate),
@@ -52,6 +53,10 @@ export function migrateState(raw, today = todayIso()) {
   for (const key of TEXT_FIELDS) {
     if (src[key] !== undefined) out[key] = str(src[key]);
   }
+
+  // Eski sayt ijrochini manager/managerPhone maydonlarida saqlagan.
+  if (src.sellerName === undefined && src.manager !== undefined) out.sellerName = str(src.manager);
+  if (src.sellerPhone === undefined && src.managerPhone !== undefined) out.sellerPhone = str(src.managerPhone);
 
   if (TELEPHONY.includes(src.telephony)) out.telephony = src.telephony;
   else if (Object.hasOwn(LEGACY_PHONE, src.phoneType)) out.telephony = LEGACY_PHONE[src.phoneType];

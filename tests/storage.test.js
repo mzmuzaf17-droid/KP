@@ -40,6 +40,15 @@ test('yangilanishdan oldin saqlangan KP xatosiz ochiladi, chatbot “yo’q”',
   assert.equal(rec.rateMeta.kind, 'official');
   assert.ok(!('phoneType' in rec.data));
   assert.ok(!('bonus' in rec.data));
+  assert.equal(rec.data.sellerName, 'Muzaffar Mirkhamidov', 'eski manager maydoni ijrochiga o’tadi');
+  assert.equal(rec.data.sellerPhone, '+998 77 177 13 19');
+});
+
+test('yangi KP: ijrochi standart, xodimlar soni bo’sh', () => {
+  const d = defaultState();
+  assert.equal(d.sellerName, 'Muzaffar Mirkhamidov');
+  assert.equal(d.employees, '');
+  assert.equal(migrateState({ sellerName: 'Dilnoza', manager: 'Muzaffar Mirkhamidov' }).sellerName, 'Dilnoza');
 });
 
 test('UzTel eski qiymati (company) ham o’tadi; buzilgan ma’lumot xato bermaydi', () => {
