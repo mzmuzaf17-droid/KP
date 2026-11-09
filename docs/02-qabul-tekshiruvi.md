@@ -62,3 +62,10 @@ Eski Safari versiyalari `@page { margin: 0 }` ni e’tiborsiz qoldirishi mumkin;
 | Maydon xatolari blur’da, yozganda yo’qoladi; xabarlar ayblamaydi va yo’l ko’rsatadi | ✅ `tests/validate.test.js`, Chromium |
 | 375 px: Forma / KP almashtirgichi, gorizontal aylantirish yo’q; telefondan PDF KP’ni chop etadi | ✅ Chromium |
 | Tugmalar ≥ 44 px, kiritish matni 16 px, interfeysda 3 ta qalinlik, reduced-motion | ✅ Chromium o’lchovi |
+
+## 2026-11-09: narx hisobi ixchamlashtirildi
+
+| O’zgarish | Tekshiruv |
+|---|---|
+| Jadval ostidagi 3 ta katta kartochka olib tashlandi (raqamlar jadvalda bor); “O’rtacha oyiga” ko’k “Jami” qatorida; bonus oylar bloki qisqardi | ✅ `tests/kp.test.js` |
+| To’liq KP: “Nima olasiz” va butun narx hisobi 2-betda, bo’sh joy qolmaydi; prognozsiz KP 2 bet | ✅ Chromium PDF: 3 / 2 / 3 / 3 bet |
