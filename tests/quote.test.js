@@ -28,7 +28,8 @@ test('5 agent, 12 oy, MyZvanki 5 raqam, chatbot 500 — chatbot oyma-oy, jamiga 
   assert.equal(q.setupUsd, 300);
   assert.equal(q.usageMonths, 15);
   assert.equal(q.crmMonthlyWithBonus, 756_000);
-  assert.equal(q.grandTotal, 14_280_000 + 300 * 12000);
+  assert.equal(q.chatbotFirstMonth, 399_000);
+  assert.equal(q.grandTotal, 14_280_000 + 300 * 12000 + 399_000, 'umumiy summaga chatbotning 1-oyi kiradi');
 });
 
 test('o’rnatish narxi agentlar soniga qarab', () => {
@@ -115,4 +116,10 @@ test('lid prognozi: hozirgi formulalar', () => {
   const empty = leadForecast({});
   assert.equal(empty.extraProfit, null);
   assert.equal(empty.hoursSaved, null);
+});
+
+test('chatbot yo’q bo’lsa umumiy summa o’zgarmaydi', () => {
+  const q = calculateQuote({ agents: 3, months: 6, chatbot: 'none', usdRate: 11941.65 });
+  assert.equal(q.chatbotFirstMonth, 0);
+  assert.equal(q.grandTotal, 5_790_330);
 });

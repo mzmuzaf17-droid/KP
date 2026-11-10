@@ -85,11 +85,11 @@ function hero({ state, q, logoSrc }) {
 
 function keyNumbers() {
   const items = [
-    ['20+', 'turagent hozir Omon CRM’dan faol foydalanmoqda'],
-    ['2 kun', 'ichida tizim o’rnatiladi va jamoa o’qitiladi'],
-    ['30 soniya', 'ichida 14 ta operatordan tur topiladi va bron qilinadi'],
+    ['users', '20+', 'turagent hozir Omon CRM’dan faol foydalanmoqda'],
+    ['rocket', '2 kun', 'ichida tizim o’rnatiladi va jamoa o’qitiladi'],
+    ['timer', '30 soniya', 'ichida 14 ta operatordan tur topiladi va bron qilinadi'],
   ];
-  return `<div class="kp-stats">${items.map(([v, t]) => `<div class="kp-stat"><strong>${v}</strong><span>${t}</span></div>`).join('')}</div>`;
+  return `<div class="kp-stats">${items.map(([ic, v, t]) => `<div class="kp-stat"><span class="kp-stat-icon">${icon(ic, { size: 18 })}</span><div><strong>${v}</strong><span>${t}</span></div></div>`).join('')}</div>`;
 }
 
 /* ---------------- agentlik holati va qo’shimcha sotuv (faqat to’ldirilganlari) ---------------- */
@@ -211,9 +211,10 @@ function priceSection(num, q) {
   const setupCalc = q.agents ? `${setupTierLabel(q.agents)}${rateText ? `<small>${rateText}</small>` : ''}` : DASH;
   const grand = q.grandTotal !== null
     ? fmtInt(q.grandTotal)
-    : q.subscriptionTotal !== null && q.setupUsd !== null ? `${fmtInt(q.subscriptionTotal)} + ${fmtUsd(q.setupUsd)}` : DASH;
+    : q.subscriptionTotal !== null && q.setupUsd !== null ? `${fmtInt(q.subscriptionTotal + q.chatbotFirstMonth)} + ${fmtUsd(q.setupUsd)}` : DASH;
+  const grandNote = hasBot ? 'Obuna, o’rnatish va chatbotning 1-oyi' : 'Obuna va o’rnatish birga';
   const botRow = hasBot
-    ? `<tr class="kp-monthly"><th scope="row"><b>AI chatbot</b><small>${CHATBOT_TIER[q.chatbotType]} ta mijoz uchun tarif</small></th><td>Har oy alohida to’lanadi</td><td class="num">${fmtInt(q.chatbotMonthly)}<small>so’m / oy</small></td></tr>`
+    ? `<tr class="kp-monthly"><th scope="row"><b>AI chatbot</b><small>${CHATBOT_TIER[q.chatbotType]} ta mijoz uchun tarif</small></th><td>1-oy umumiy summada, keyin har oy</td><td class="num">${fmtInt(q.chatbotMonthly)}<small>so’m / oy</small></td></tr>`
     : '';
 
   const bonusBlocks = Array.from({ length: q.usageMonths }, (_, i) => `<i class="${i < M ? 'paid' : 'free'}"></i>`).join('');
@@ -231,7 +232,7 @@ function priceSection(num, q) {
         ${isNum(q.subscriptionTotal) ? `<tr class="kp-total"><th scope="row"><b>Jami obuna${q.telephonyType !== 'none' ? ' va telefoniya' : ''}</b>${isNum(q.avgMonthly) ? `<small>O’rtacha oyiga ${keep(fmtUzs(q.avgMonthly))}</small>` : ''}</th><td>${M} oy uchun</td><td class="num">${fmtInt(q.subscriptionTotal)}<small>so’m</small></td></tr>` : ''}
         ${botRow}
         ${isNum(q.setupUsd) ? `<tr class="kp-setup"><th scope="row"><b>O’rnatish va integratsiya</b><small>Bir martalik to’lov, 2 kunda bajariladi</small></th><td>${setupCalc}</td><td class="num">${fmtUsd(q.setupUsd)}${q.setupUzs !== null ? `<small>${fmtInt(q.setupUzs)} so’m</small>` : ''}</td></tr>` : ''}
-        ${grand !== DASH ? `<tr class="kp-grand"><th scope="row"><b>Umumiy to’lov</b></th><td>Obuna va o’rnatish birga</td><td class="num">${grand}</td></tr>` : ''}
+        ${grand !== DASH ? `<tr class="kp-grand"><th scope="row"><b>Umumiy to’lov</b></th><td>${grandNote}</td><td class="num">${grand}</td></tr>` : ''}
       </tbody>
     </table></div>
     <div class="kp-bonus">
@@ -251,7 +252,7 @@ function rolloutSection(num) {
     ['Keyin', 'Texnik yordam', 'Savol chiqsa, jamoamiz o’zbek tilida darhol yordam beradi.'],
   ];
   return `<section class="kp-section">
-    ${sectionHead(num, 'Joriy etish', '')}
+    ${sectionHead(num, 'Joriy etish', '2 kunda ishga tushiramiz')}
     <ol class="kp-steps">${steps.map(([tag, title, body], i) => `<li><span class="kp-step-tag${i === 2 ? ' dark' : ''}">${tag}</span><h3>${title}</h3><p>${body}</p></li>`).join('')}</ol>
   </section>`;
 }
@@ -264,7 +265,7 @@ function termsSection(num, state, q, rateMeta, hasForecast) {
     : rateMeta.kind === 'fallback' ? `namunaviy kurs, ${esc(rateMeta.date)}` : 'kelishilgan kurs';
   const items = [
     `Obuna: ${q.months} oy to’lov + ${q.bonusMonths} oy bepul = ${q.usageMonths} oy CRM’dan foydalanish. Bepul oylar CRM obunasiga beriladi.`,
-    q.chatbotType !== 'none' ? `AI chatbot obunaga kirmaydi: har oy alohida ${fmtUzs(q.chatbotMonthly)} to’lanadi, oldindan to’lov olinmaydi.` : null,
+    q.chatbotType !== 'none' ? `AI chatbot obunaga kirmaydi: birinchi oy to’lovi (${fmtUzs(q.chatbotMonthly)}) umumiy summaga kiritilgan, keyingi oylar har oy alohida to’lanadi.` : null,
     isNum(q.setupUsd) ? `O’rnatish va integratsiya bir martalik to’lov: ${fmtUsd(q.setupUsd)}${q.agents ? ` (${setupTierLabel(q.agents)})` : ''}. Keyingi oylarda takrorlanmaydi.` : null,
     q.usdRate !== null
       ? `Narxlar so’mda. O’rnatish narxi 1 USD = ${fmtDecimal(q.usdRate)} so’m (${rateSource}) bo’yicha hisoblangan; to’lov kunidagi kurs bilan aniqlashtiriladi.`
@@ -273,8 +274,8 @@ function termsSection(num, state, q, rateMeta, hasForecast) {
     `${hasForecast ? 'Qo’shimcha sotuv hisobi prognoz, kafolat emas. ' : ''}Agentlar soni yoki xizmatlar tarkibi o’zgarsa, summa ham o’zgaradi.`,
   ].filter(Boolean);
   return `<section class="kp-section">
-    ${sectionHead(num, 'Shartlar', '')}
-    <ul class="kp-terms">${items.map((t) => `<li>${keep(t)}</li>`).join('')}</ul>
+    ${sectionHead(num, 'Shartlar', 'Taklif shartlari')}
+    <ul class="kp-terms">${items.map((t) => `<li>${icon('circle-check', { size: 14 })}<span>${keep(t)}</span></li>`).join('')}</ul>
   </section>`;
 }
 

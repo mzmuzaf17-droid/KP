@@ -79,7 +79,9 @@ test('nazorat misoli KP’da to’g’ri chiqadi, chatbot oyma-oy', () => {
   for (const s of ['11 340 000', '2 940 000', '14 280 000', '1 190 000', '$300', '756 000', '399 000 so’m / oy']) assert.ok(text.includes(s), s);
   assert.ok(!text.includes('4 788 000'), 'chatbot 12 oyga ko’paytirilmaydi');
   assert.ok(!text.includes('19 068 000'));
-  assert.ok(text.includes('Har oy alohida to’lanadi'));
+  assert.ok(text.includes('1-oy umumiy summada, keyin har oy'));
+  const grand = html.slice(html.indexOf('class="kp-grand"'), html.indexOf('</tr>', html.indexOf('class="kp-grand"')));
+  assert.ok(grand.includes('18 261 495') && grand.includes('chatbotning 1-oyi'), 'umumiy to’lovga chatbotning 1-oyi kiradi');
   const total = html.slice(html.indexOf('class="kp-total"'), html.indexOf('</tr>', html.indexOf('class="kp-total"')));
   assert.ok(total.includes('14 280 000'));
 });

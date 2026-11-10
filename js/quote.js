@@ -11,6 +11,7 @@ import { PRICING, TERMS } from './pricing.js';
  *   crm: number|null, telephony: number|null,
  *   subscriptionTotal: number|null, avgMonthly: number|null,
  *   setupUsd: number|null, setupUzs: number|null, grandTotal: number|null,
+ *   chatbotFirstMonth: number,
  *   bonusMonths: number, usageMonths: number, crmMonthlyWithBonus: number|null }} Quote
  */
 
@@ -61,15 +62,16 @@ export function calculateQuote(input = {}) {
   }
   const telephony = telephonyMonthly === null ? null : telephonyMonthly * months;
 
-  // AI chatbot oyma-oy to’lanadi: oldindan to’lanadigan obuna summasiga qo’shilmaydi.
+  // AI chatbot oyma-oy to’lanadi: obuna summasiga qo’shilmaydi, faqat birinchi oy to’lovi umumiy summaga kiradi.
   const chatbotMonthly = PRICING.chatbot[chatbotType];
+  const chatbotFirstMonth = chatbotMonthly;
 
   const subscriptionTotal = sum(crm, telephony);
   const avgMonthly = subscriptionTotal === null ? null : Math.round(subscriptionTotal / months);
 
   const setupUsd = agents === null ? null : PRICING.setupUsd(agents);
   const setupUzs = setupUsd === null || rate === null ? null : Math.round(setupUsd * rate);
-  const grandTotal = sum(subscriptionTotal, setupUzs);
+  const grandTotal = sum(subscriptionTotal, setupUzs, chatbotFirstMonth);
   const crmMonthlyWithBonus = crm === null ? null : Math.round(crm / usageMonths);
 
   return {
@@ -77,7 +79,7 @@ export function calculateQuote(input = {}) {
     crmMonthly, telephonyMonthly, chatbotMonthly,
     crm, telephony,
     subscriptionTotal, avgMonthly,
-    setupUsd, setupUzs, grandTotal,
+    setupUsd, setupUzs, grandTotal, chatbotFirstMonth,
     bonusMonths, usageMonths, crmMonthlyWithBonus,
   };
 }
