@@ -10,9 +10,11 @@ export const KEYS = Object.freeze({
 });
 export const MAX_SAVED = 80;
 
-const TELEPHONY = ['none', 'myzvanki', 'uztel'];
+const TELEPHONY = ['none', 'myzvanki', 'utel_start', 'utel_optima', 'utel_profi'];
+// Eski yozuvlar: UzTel (110 000 / raqam) o’rniga UTEL paketlari keldi — eng yaqini Start AI (1 xodim 110 000).
+const LEGACY_TELEPHONY = { uztel: 'utel_start' };
 const CHATBOT = ['none', 'c500', 'c1000'];
-const LEGACY_PHONE = { personal: 'myzvanki', company: 'uztel', none: 'none' };
+const LEGACY_PHONE = { personal: 'myzvanki', company: 'utel_start', none: 'none' };
 
 const TEXT_FIELDS = [
   'agency', 'owner', 'contact', 'city', 'date', 'validDays', 'sellerName', 'sellerPhone',
@@ -59,6 +61,7 @@ export function migrateState(raw, today = todayIso()) {
   if (src.sellerPhone === undefined && src.managerPhone !== undefined) out.sellerPhone = str(src.managerPhone);
 
   if (TELEPHONY.includes(src.telephony)) out.telephony = src.telephony;
+  else if (Object.hasOwn(LEGACY_TELEPHONY, src.telephony)) out.telephony = LEGACY_TELEPHONY[src.telephony];
   else if (Object.hasOwn(LEGACY_PHONE, src.phoneType)) out.telephony = LEGACY_PHONE[src.phoneType];
 
   if (src.lines === undefined && src.phones !== undefined) out.lines = str(src.phones);

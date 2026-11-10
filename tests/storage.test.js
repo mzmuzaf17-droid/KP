@@ -51,8 +51,10 @@ test('yangi KP: ijrochi standart, xodimlar soni bo’sh', () => {
   assert.equal(migrateState({ sellerName: 'Dilnoza', manager: 'Muzaffar Mirkhamidov' }).sellerName, 'Dilnoza');
 });
 
-test('UzTel eski qiymati (company) ham o’tadi; buzilgan ma’lumot xato bermaydi', () => {
-  assert.equal(migrateState({ phoneType: 'company', phones: '2' }).telephony, 'uztel');
+test('eski UzTel yozuvlari UTEL Start AI ga o’tadi; buzilgan ma’lumot xato bermaydi', () => {
+  assert.equal(migrateState({ phoneType: 'company', phones: '2' }).telephony, 'utel_start');
+  assert.equal(migrateState({ telephony: 'uztel', lines: '2' }).telephony, 'utel_start');
+  assert.equal(migrateState({ telephony: 'utel_profi' }).telephony, 'utel_profi');
   assert.deepEqual(Object.keys(migrateState(null)).sort(), Object.keys(defaultState()).sort());
   assert.equal(migrateState({ agencyImage: 'javascript:alert(1)' }).agencyImage, '');
   assert.deepEqual(readSaved(memoryStorage({ [KEYS.saved]: '{not json' })), []);

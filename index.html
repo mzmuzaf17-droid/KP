@@ -109,8 +109,19 @@
         <div class="field"><label for="agents">Agentlar soni</label><input id="agents" data-key="agents" type="number" inputmode="numeric" min="1" max="999" placeholder="Masalan: 5"></div>
         <div class="field"><label for="months">Obuna muddati</label>
           <select id="months" data-key="months"><option value="6">6 oy (+1 oy bepul)</option><option value="12">12 oy (+3 oy bepul)</option></select></div>
-        <div class="field"><label for="telephony">Telefoniya</label>
-          <select id="telephony" data-key="telephony"><option value="none">Kerak emas</option><option value="myzvanki">MyZvanki · 49 000 / raqam</option><option value="uztel">UzTel · 110 000 / raqam</option></select></div>
+        <div class="field full"><label for="telephony">Telefoniya</label>
+          <select id="telephony" data-key="telephony" aria-describedby="telephonyHint">
+            <option value="none">Kerak emas</option>
+            <optgroup label="UTEL IP-telefoniya (paket)">
+              <option value="utel_start">UTEL Start AI · 3 xodim</option>
+              <option value="utel_optima">UTEL Optima AI · 7 xodim</option>
+              <option value="utel_profi">UTEL Profi AI · 15 xodim</option>
+            </optgroup>
+            <optgroup label="Qo’ng’iroq yozuvi (Android)">
+              <option value="myzvanki">MyZvanki · 49 000 / raqam</option>
+            </optgroup>
+          </select>
+          <small class="hint" id="telephonyHint" aria-live="polite"></small></div>
         <div class="field" id="linesField"><label for="lines">Raqamlar soni</label><input id="lines" data-key="lines" type="number" inputmode="numeric" min="1" max="999"></div>
         <div class="field full"><label for="chatbot">AI chatbot (oyma-oy to’lanadi)</label>
           <select id="chatbot" data-key="chatbot"><option value="none">Kerak emas</option><option value="c500">500 ta mijoz · 399 000 / oy</option><option value="c1000">1 000 ta mijoz · 499 000 / oy</option></select></div>

@@ -1,5 +1,5 @@
 // Forma, saqlash, takliflar paneli, kurs va PDF. Hisob calculateQuote() da, KP renderKp() da.
-import { setupTierLabel, FALLBACK_USD_RATE, TELEPHONY_LABELS, CHATBOT_LABELS } from './pricing.js';
+import { setupTierLabel, FALLBACK_USD_RATE, TELEPHONY_LABELS, CHATBOT_LABELS, UTEL_PACKAGES, recommendUtel } from './pricing.js';
 import { calculateQuote, quoteInputFromState, leadForecast } from './quote.js';
 import { fmtUzs, fmtUsd, fmtDecimal, fmtDate, pdfFileName, esc, DASH } from './format.js';
 import {
@@ -179,19 +179,42 @@ function cardSummaries(q) {
     q.subscriptionTotal !== null && fmtUzs(q.subscriptionTotal)));
 }
 
+/** Telefoniya izohi: UTEL paketi tarkibi va agentlar soniga yetish-yetmasligi. */
+function renderTelephonyHint(q) {
+  const el = $('telephonyHint');
+  el.classList.remove('warn');
+  if (q.telephonyPackage) {
+    const p = q.telephonyPackage;
+    const period = q.months === 12 ? 'yillik to’lovda' : 'oylik to’lov narxi';
+    if (!q.telephonyFits) {
+      const rec = UTEL_PACKAGES[recommendUtel(q.agents)];
+      el.classList.add('warn');
+      el.textContent = `${q.agents} agent uchun ${p.name} (${p.staff} xodim) yetmaydi — ${rec.name} (${rec.staff} xodim) paketini tanlang.`;
+    } else {
+      el.textContent = `${p.staff} ta xodim · ${fmtUzs(p.monthly[q.months])}/oy (${period}) · IVR, suhbatlarni yozib olish, AI-yordamchi.`;
+    }
+  } else if (q.telephonyType === 'myzvanki') {
+    el.textContent = 'Qo’ng’iroqlarni yozib olish, faqat Android telefonlarda ishlaydi.';
+  } else {
+    el.textContent = q.agents ? `${q.agents} agent uchun mos paket: UTEL ${UTEL_PACKAGES[recommendUtel(q.agents)].name}.` : '';
+  }
+}
+
 function render() {
   const q = quoteOf(state);
   const f = leadForecast(state);
 
-  $('lines').disabled = q.telephonyType === 'none';
-  $('linesField').classList.toggle('is-off', q.telephonyType === 'none');
+  const usesLines = q.telephonyType === 'myzvanki';
+  $('lines').disabled = !usesLines;
+  $('linesField').hidden = !usesLines;
+  renderTelephonyHint(q);
   $('setupOut').textContent = q.setupUsd === null
     ? 'Agentlar sonini kiriting'
     : `${fmtUsd(q.setupUsd)} · ${setupTierLabel(q.agents)}${q.setupUzs !== null ? ` · ${fmtUzs(q.setupUzs)}` : ''}`;
 
   const rows = [
     [`CRM · ${q.months} oy`, fmtUzs(q.crm)],
-    q.telephonyType !== 'none' ? [`${TELEPHONY_LABELS[q.telephonyType]} · ${q.lines} raqam`, fmtUzs(q.telephony)] : null,
+    q.telephonyType !== 'none' ? [q.telephonyPackage ? TELEPHONY_LABELS[q.telephonyType] : `MyZvanki · ${q.lines} raqam`, fmtUzs(q.telephony)] : null,
     ['Obuna jami', fmtUzs(q.subscriptionTotal)],
     ['O’rtacha oyiga', fmtUzs(q.avgMonthly)],
     [`O’rnatish (${fmtUsd(q.setupUsd)})`, q.setupUzs === null ? (q.setupUsd === null ? DASH : 'kurs kiritilmagan') : fmtUzs(q.setupUzs)],
@@ -625,7 +648,8 @@ function quoteText() {
   const from = [state.sellerName.trim(), state.sellerPhone.trim()].filter(Boolean).join(', ');
   lines.push(`Kimdan: ${from || 'Omon CRM'}`, '');
   lines.push(`CRM: 189 000 × ${q.agents ?? DASH} agent × ${q.months} oy = ${fmtUzs(q.crm)} (+${q.bonusMonths} oy bepul, ${q.usageMonths} oy foydalanish)`);
-  if (q.telephonyType !== 'none') lines.push(`${TELEPHONY_LABELS[q.telephonyType]}: ${q.lines} raqam × ${q.months} oy = ${fmtUzs(q.telephony)}`);
+  if (q.telephonyPackage) lines.push(`IP-telefoniya ${TELEPHONY_LABELS[q.telephonyType]} (${q.telephonyPackage.staff} xodim): ${fmtUzs(q.telephonyMonthly)} × ${q.months} oy = ${fmtUzs(q.telephony)}`);
+  else if (q.telephonyType !== 'none') lines.push(`MyZvanki: ${q.lines} raqam × ${q.months} oy = ${fmtUzs(q.telephony)}`);
   if (q.chatbotType !== 'none') lines.push(`AI chatbot (${CHATBOT_LABELS[q.chatbotType]}): ${fmtUzs(q.chatbotMonthly)} / oy — 1-oy umumiy summada, keyin har oy alohida`);
   lines.push(`Obuna jami: ${fmtUzs(q.subscriptionTotal)} · o’rtacha oyiga ${fmtUzs(q.avgMonthly)}`);
   lines.push(`O’rnatish va integratsiya (bir martalik): ${fmtUsd(q.setupUsd)}${q.setupUzs !== null ? ` = ${fmtUzs(q.setupUzs)}` : ''}`);
@@ -665,7 +689,7 @@ function bind() {
       }
     });
   }
-  $('telephony').addEventListener('change', () => { if (state.telephony === 'none') clearError($('lines')); });
+  $('telephony').addEventListener('change', () => { if (state.telephony !== 'myzvanki') clearError($('lines')); });
   $('editor').addEventListener('submit', (e) => e.preventDefault());
   $('refreshRate').addEventListener('click', () => {
     rateMeta = { ...rateMeta, manual: false };

@@ -176,10 +176,21 @@ function featuresSection(num, q) {
 
 /* ---------------- narx va keyingi qadam ---------------- */
 
-const TELEPHONY_ROW = {
-  myzvanki: { title: 'Qo’ng’iroqlarni yozib olish', sub: 'MyZvanki (Moizvonki), faqat Android', chip: 'MyZvanki' },
-  uztel: { title: 'Qo’ng’iroqlarni yozib olish', sub: 'UzTel IP-telefoniya', chip: 'UzTel' },
-};
+/** Telefoniya qatori: MyZvanki raqam soniga, UTEL — paket narxi. */
+function telephonyRow(q, M) {
+  if (q.telephonyType === 'myzvanki') {
+    return {
+      title: 'Qo’ng’iroqlarni yozib olish', sub: 'MyZvanki (Moizvonki), faqat Android', chip: 'Qo’ng’iroq yozuvi · MyZvanki',
+      calc: `${fmtInt(PRICING.telephony.myzvanki)} × ${q.lines} raqam × ${M} oy`,
+    };
+  }
+  const p = q.telephonyPackage;
+  return {
+    title: `IP-telefoniya UTEL · ${p.name}`, sub: `${p.staff} ta xodim · IVR, suhbatlarni yozib olish, AI-yordamchi`,
+    chip: `IP-telefoniya · UTEL ${p.name}`,
+    calc: `${fmtInt(p.monthly[M])} × ${M} oy`,
+  };
+}
 const CHATBOT_TIER = { c500: '500', c1000: '1 000' };
 
 function priceSection(num, q) {
@@ -190,7 +201,7 @@ function priceSection(num, q) {
   const chips = [
     q.agents ? ['users', `${q.agents} ta agent`] : null,
     ['calendar', `${M} oylik obuna, +${q.bonusMonths} oy bepul`],
-    q.telephonyType !== 'none' && isNum(q.telephony) ? ['mic', `Qo’ng’iroq yozuvi · ${TELEPHONY_ROW[q.telephonyType].chip}`] : null,
+    q.telephonyType !== 'none' && isNum(q.telephony) ? ['mic', telephonyRow(q, M).chip] : null,
     hasBot ? ['sparkles', 'AI chatbot · oyma-oy'] : null,
   ].filter(Boolean);
 
@@ -199,10 +210,7 @@ function priceSection(num, q) {
       title: `Omon CRM obunasi<em class="kp-free">+${q.bonusMonths} oy bepul</em>`, sub: 'Har bir agent uchun',
       calc: `${fmtInt(PRICING.crmPerAgentMonth)} × ${agentsText} agent × ${M} oy`, value: fmtInt(q.crm),
     },
-    q.telephonyType !== 'none' && isNum(q.telephony) && {
-      title: TELEPHONY_ROW[q.telephonyType].title, sub: TELEPHONY_ROW[q.telephonyType].sub,
-      calc: `${fmtInt(PRICING.telephony[q.telephonyType])} × ${q.lines} raqam × ${M} oy`, value: fmtInt(q.telephony),
-    },
+    q.telephonyType !== 'none' && isNum(q.telephony) && { ...telephonyRow(q, M), value: fmtInt(q.telephony) },
   ].filter(Boolean);
 
   if (!rows.length && !hasBot) return '';
@@ -265,13 +273,13 @@ function termsSection(num, state, q, rateMeta, hasForecast) {
     : rateMeta.kind === 'fallback' ? `namunaviy kurs, ${esc(rateMeta.date)}` : 'kelishilgan kurs';
   const items = [
     `Obuna: ${q.months} oy to’lov + ${q.bonusMonths} oy bepul = ${q.usageMonths} oy CRM’dan foydalanish. Bepul oylar CRM obunasiga beriladi.`,
+    q.telephonyPackage ? `UTEL ${q.telephonyPackage.name}: ${q.telephonyPackage.staff} ta xodimgacha, AI avtoqo’ng’iroq ${fmtInt(q.telephonyPackage.aiCalls)} ta; 10 kunlik sinov.` : null,
     q.chatbotType !== 'none' ? `AI chatbot obunaga kirmaydi: birinchi oy to’lovi (${fmtUzs(q.chatbotMonthly)}) umumiy summaga kiritilgan, keyingi oylar har oy alohida to’lanadi.` : null,
     isNum(q.setupUsd) ? `O’rnatish va integratsiya bir martalik to’lov: ${fmtUsd(q.setupUsd)}${q.agents ? ` (${setupTierLabel(q.agents)})` : ''}. Keyingi oylarda takrorlanmaydi.` : null,
     q.usdRate !== null
       ? `Narxlar so’mda. O’rnatish narxi 1 USD = ${fmtDecimal(q.usdRate)} so’m (${rateSource}) bo’yicha hisoblangan; to’lov kunidagi kurs bilan aniqlashtiriladi.`
       : 'Narxlar so’mda. O’rnatish narxi dollarda; so’mdagi summasi to’lov kunidagi Markaziy bank kursi bo’yicha hisoblanadi.',
-    until ? `Taklif ${fmtDate(state.date)} dan ${fmtDate(until)} gacha amal qiladi.` : null,
-    `${hasForecast ? 'Qo’shimcha sotuv hisobi prognoz, kafolat emas. ' : ''}Agentlar soni yoki xizmatlar tarkibi o’zgarsa, summa ham o’zgaradi.`,
+    `${until ? `Taklif ${fmtDate(state.date)} dan ${fmtDate(until)} gacha amal qiladi. ` : ''}${hasForecast ? 'Qo’shimcha sotuv hisobi prognoz, kafolat emas. ' : ''}Agentlar soni yoki xizmatlar tarkibi o’zgarsa, summa ham o’zgaradi.`,
   ].filter(Boolean);
   return `<section class="kp-section">
     ${sectionHead(num, 'Shartlar', 'Taklif shartlari')}

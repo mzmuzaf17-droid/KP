@@ -77,4 +77,16 @@ Eski Safari versiyalari `@page { margin: 0 }` ni e’tiborsiz qoldirishi mumkin;
 | AI chatbotning birinchi oy to’lovi “Umumiy to’lov”ga qo’shiladi; oyma-oy qatori va shartlardagi izoh saqlanadi. Nazorat misoli: 14 280 000 + 3 582 495 + 399 000 = 18 261 495 | ✅ `tests/quote.test.js`, `tests/kp.test.js` |
 | Forma ustuni telefoniya tanlanganda kengayib, o’ng cheti kesilardi — tuzatildi | ✅ Chromium o’lchovi |
 | KP: asosiy raqamlar ikonkalar bilan sarlavha ustiga chiqib turadi; “Joriy etish” va “Shartlar”ga sarlavha; shartlar belgili ikki ustunda; preview’da varaq aniq qog’oz kengligida | ✅ Chromium PDF: 3 / 2 / 3 / 3 bet |
-| IP-telefoniya (UTEL) paketlari | ⏳ utel.uz tarmoqda ochilmadi — paket ma’lumotlari kutilmoqda |
+| IP-telefoniya (UTEL) paketlari | ✅ keyingi bo’limda |
+
+## 2026-11-10: UTEL IP-telefoniya paketlari
+
+Manba: buyurtmachi yuborgan utel.uz tariflar sahifasi screenshotlari (1 oy va 1 yil).
+
+| O’zgarish | Tekshiruv |
+|---|---|
+| UzTel (110 000 / raqam) o’rniga UTEL paketlari: Start AI (3 xodim), Optima AI (7), Profi AI (15). Narx paket uchun, raqam soniga bog’liq emas | ✅ `tests/quote.test.js`: Optima 12 oy = 6 720 000, Start = 3 420 000, Profi = 11 700 000 (utel.uz yillik narxlari bilan bir xil) |
+| 6 oylik obunada UTEL “1 oy” narxi olinadi (6 oylik narx hali ma’lum emas) | ⚠️ 6 oy tarifi ma’lum bo’lsa, `js/pricing.js` dagi `monthly[6]` ni yangilash kerak |
+| Forma: agentlar soniga mos paket tavsiya qilinadi; paket yetmasa ogohlantiradi; raqamlar soni faqat MyZvanki uchun | ✅ Chromium |
+| Eski saqlangan UzTel takliflari UTEL Start AI ga o’tadi | ✅ `tests/storage.test.js` |
+| KP: narx jadvalida “IP-telefoniya UTEL · Optima AI”, shartlarda paket tafsiloti | ✅ `tests/kp.test.js`; PDF 3 / 2 / 3 / 3 bet |

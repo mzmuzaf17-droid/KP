@@ -21,7 +21,7 @@ export const FIELD_RULES = Object.freeze({
   searchAfter: range(0, 1440),
   searches: range(0, 9999, true),
   agents: { ...range(1, 999, true), required: 'Narx hisoblanishi uchun agentlar sonini kiriting.' },
-  lines: { ...range(1, 999, true), requiredWhen: (s) => s.telephony !== 'none', required: 'Telefoniya narxi hisoblanishi uchun raqamlar sonini kiriting.' },
+  lines: { ...range(1, 999, true), requiredWhen: (s) => s.telephony === 'myzvanki', required: 'MyZvanki narxi hisoblanishi uchun raqamlar sonini kiriting.' },
   fx: { ...range(1000, 100000), required: 'O’rnatish narxini so’mda ko’rsatish uchun kursni kiriting yoki “Kursni yangilash”ni bosing.' },
 });
 
