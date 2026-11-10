@@ -13,13 +13,13 @@ export const TERMS = Object.freeze([6, 12]);
 
 /**
  * UTEL IP-telefoniya paketlari (utel.uz, 2026-11). Narx paket uchun, xodim soni paketga kiradi.
- * monthly[12] — “1 yil” to’lovidagi oylik narx; monthly[6] — 6 oylik narx ma’lum bo’lguncha
- * “1 oy” narxi olingan (eng yuqori, ya’ni mijoz uchun xavfsiz). Yangi narx kelsa, shu yerda o’zgartiring.
+ * Chatbot kabi oyma-oy to’lanadi: “1 oy” tarifi narxi olinadi, CRM obunasiga (6/12 oy) qo’shilmaydi,
+ * faqat birinchi oy to’lovi umumiy to’lovga kiradi.
  */
 export const UTEL_PACKAGES = Object.freeze({
-  utel_start: Object.freeze({ name: 'Start AI', staff: 3, monthly: Object.freeze({ 6: 330_000, 12: 285_000 }), channels: 10, aiCalls: 300, aiMessages: 100 }),
-  utel_optima: Object.freeze({ name: 'Optima AI', staff: 7, monthly: Object.freeze({ 6: 665_000, 12: 560_000 }), channels: 20, aiCalls: 500, aiMessages: 300 }),
-  utel_profi: Object.freeze({ name: 'Profi AI', staff: 15, monthly: Object.freeze({ 6: 1_200_000, 12: 975_000 }), channels: 30, aiCalls: 1_000, aiMessages: 500 }),
+  utel_start: Object.freeze({ name: 'Start AI', staff: 3, monthly: 330_000, channels: 10, aiCalls: 300, aiMessages: 100 }),
+  utel_optima: Object.freeze({ name: 'Optima AI', staff: 7, monthly: 665_000, channels: 20, aiCalls: 500, aiMessages: 300 }),
+  utel_profi: Object.freeze({ name: 'Profi AI', staff: 15, monthly: 1_200_000, channels: 30, aiCalls: 1_000, aiMessages: 500 }),
 });
 
 export const isUtel = (type) => Object.hasOwn(UTEL_PACKAGES, type);

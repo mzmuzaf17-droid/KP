@@ -185,13 +185,12 @@ function renderTelephonyHint(q) {
   el.classList.remove('warn');
   if (q.telephonyPackage) {
     const p = q.telephonyPackage;
-    const period = q.months === 12 ? 'yillik to’lovda' : 'oylik to’lov narxi';
     if (!q.telephonyFits) {
       const rec = UTEL_PACKAGES[recommendUtel(q.agents)];
       el.classList.add('warn');
       el.textContent = `${q.agents} agent uchun ${p.name} (${p.staff} xodim) yetmaydi — ${rec.name} (${rec.staff} xodim) paketini tanlang.`;
     } else {
-      el.textContent = `${p.staff} ta xodim · ${fmtUzs(p.monthly[q.months])}/oy (${period}) · IVR, suhbatlarni yozib olish, AI-yordamchi.`;
+      el.textContent = `${p.staff} ta xodim · ${fmtUzs(p.monthly)}/oy, oyma-oy to’lanadi (1-oyi umumiy summada) · IVR, suhbatlarni yozib olish, AI-yordamchi.`;
     }
   } else if (q.telephonyType === 'myzvanki') {
     el.textContent = 'Qo’ng’iroqlarni yozib olish, faqat Android telefonlarda ishlaydi.';
@@ -214,13 +213,14 @@ function render() {
 
   const rows = [
     [`CRM · ${q.months} oy`, fmtUzs(q.crm)],
-    q.telephonyType !== 'none' ? [q.telephonyPackage ? TELEPHONY_LABELS[q.telephonyType] : `MyZvanki · ${q.lines} raqam`, fmtUzs(q.telephony)] : null,
+    q.telephonyType === 'myzvanki' ? [`MyZvanki · ${q.lines} raqam`, fmtUzs(q.telephony)] : null,
     ['Obuna jami', fmtUzs(q.subscriptionTotal)],
     ['O’rtacha oyiga', fmtUzs(q.avgMonthly)],
     [`O’rnatish (${fmtUsd(q.setupUsd)})`, q.setupUzs === null ? (q.setupUsd === null ? DASH : 'kurs kiritilmagan') : fmtUzs(q.setupUzs)],
+    q.telephonyPackage ? [`${TELEPHONY_LABELS[q.telephonyType]} · 1-oy`, fmtUzs(q.utelFirstMonth)] : null,
     q.chatbotType !== 'none' ? [`AI chatbot · 1-oy (${CHATBOT_LABELS[q.chatbotType]})`, fmtUzs(q.chatbotFirstMonth)] : null,
     ['Umumiy', fmtUzs(q.grandTotal), 'grand'],
-    q.chatbotType !== 'none' ? ['Keyin AI chatbot har oy', `${fmtUzs(q.chatbotMonthly)} / oy`, 'note'] : null,
+    q.monthlyExtras > 0 ? [`Keyin har oy (${[q.telephonyPackage && 'UTEL', q.chatbotType !== 'none' && 'chatbot'].filter(Boolean).join(' + ')})`, `${fmtUzs(q.monthlyExtras)} / oy`, 'note'] : null,
   ].filter(Boolean);
   $('summary').innerHTML = rows.map(([k, v, c = '']) => `<dt class="${c}">${k}</dt><dd class="${c}">${v}</dd>`).join('');
 
@@ -648,7 +648,7 @@ function quoteText() {
   const from = [state.sellerName.trim(), state.sellerPhone.trim()].filter(Boolean).join(', ');
   lines.push(`Kimdan: ${from || 'Omon CRM'}`, '');
   lines.push(`CRM: 189 000 × ${q.agents ?? DASH} agent × ${q.months} oy = ${fmtUzs(q.crm)} (+${q.bonusMonths} oy bepul, ${q.usageMonths} oy foydalanish)`);
-  if (q.telephonyPackage) lines.push(`IP-telefoniya ${TELEPHONY_LABELS[q.telephonyType]} (${q.telephonyPackage.staff} xodim): ${fmtUzs(q.telephonyMonthly)} × ${q.months} oy = ${fmtUzs(q.telephony)}`);
+  if (q.telephonyPackage) lines.push(`IP-telefoniya ${TELEPHONY_LABELS[q.telephonyType]} (${q.telephonyPackage.staff} xodim): ${fmtUzs(q.telephonyMonthly)} / oy — 1-oy umumiy summada, keyin har oy alohida`);
   else if (q.telephonyType !== 'none') lines.push(`MyZvanki: ${q.lines} raqam × ${q.months} oy = ${fmtUzs(q.telephony)}`);
   if (q.chatbotType !== 'none') lines.push(`AI chatbot (${CHATBOT_LABELS[q.chatbotType]}): ${fmtUzs(q.chatbotMonthly)} / oy — 1-oy umumiy summada, keyin har oy alohida`);
   lines.push(`Obuna jami: ${fmtUzs(q.subscriptionTotal)} · o’rtacha oyiga ${fmtUzs(q.avgMonthly)}`);
