@@ -1,8 +1,8 @@
 // Toza hisob-kitob: DOM’ga tegmaydi. KP, forma paneli va PDF faqat shu natijadan foydalanadi.
-import { PRICING, TERMS } from './pricing.js';
+import { PRICING, TERMS, UTEL_PACKAGES, isUtel } from './pricing.js';
 
 /**
- * @typedef {{ agents: number|null, months: 6|12, telephony: 'none'|'myzvanki'|'uztel',
+ * @typedef {{ agents: number|null, months: 6|12, telephony: 'none'|'myzvanki'|'utel_start'|'utel_optima'|'utel_profi',
  *   lines: number|null, chatbot: 'none'|'c500'|'c1000', usdRate: number|null }} QuoteInput
  *
  * @typedef {{ agents: number|null, months: 6|12, lines: number,
@@ -42,7 +42,7 @@ const sum = (...xs) => (xs.some((x) => x === null) ? null : xs.reduce((a, b) => 
 export function calculateQuote(input = {}) {
   const months = TERMS.includes(Number(input.months)) ? Number(input.months) : 6;
   const agents = posInt(input.agents);
-  const telephonyType = Object.hasOwn(PRICING.telephony, input.telephony) ? input.telephony : 'none';
+  const telephonyType = Object.hasOwn(PRICING.telephony, input.telephony) || isUtel(input.telephony) ? input.telephony : 'none';
   const chatbotType = Object.hasOwn(PRICING.chatbot, input.chatbot) ? input.chatbot : 'none';
   const usdRate = toNumber(input.usdRate);
   const rate = usdRate !== null && usdRate > 0 ? usdRate : null;
@@ -53,13 +53,18 @@ export function calculateQuote(input = {}) {
   const crmMonthly = agents === null ? null : PRICING.crmPerAgentMonth * agents;
   const crm = crmMonthly === null ? null : crmMonthly * months;
 
+  // MyZvanki — raqam soniga; UTEL — paket narxi (xodimlar soni paketga kiradi).
   let lines = 0;
   let telephonyMonthly = 0;
-  if (telephonyType !== 'none') {
+  const telephonyPackage = isUtel(telephonyType) ? UTEL_PACKAGES[telephonyType] : null;
+  if (telephonyPackage) {
+    telephonyMonthly = telephonyPackage.monthly[months];
+  } else if (telephonyType !== 'none') {
     const l = nonNegInt(input.lines);
     lines = l ?? 0;
     telephonyMonthly = l === null ? null : PRICING.telephony[telephonyType] * l;
   }
+  const telephonyFits = !telephonyPackage || agents === null || agents <= telephonyPackage.staff;
   const telephony = telephonyMonthly === null ? null : telephonyMonthly * months;
 
   // AI chatbot oyma-oy to’lanadi: obuna summasiga qo’shilmaydi, faqat birinchi oy to’lovi umumiy summaga kiradi.
@@ -75,7 +80,7 @@ export function calculateQuote(input = {}) {
   const crmMonthlyWithBonus = crm === null ? null : Math.round(crm / usageMonths);
 
   return {
-    agents, months, lines, telephonyType, chatbotType, usdRate: rate,
+    agents, months, lines, telephonyType, telephonyPackage, telephonyFits, chatbotType, usdRate: rate,
     crmMonthly, telephonyMonthly, chatbotMonthly,
     crm, telephony,
     subscriptionTotal, avgMonthly,

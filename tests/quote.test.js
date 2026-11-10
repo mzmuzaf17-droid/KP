@@ -49,8 +49,31 @@ test('chatbot 1 000 mijoz → 499 000 / oy, muddatga ko’paytirilmaydi', () => 
   assert.equal(q.subscriptionTotal, 189_000 * 6);
 });
 
-test('UzTel 2 raqam, 6 oy → 1 320 000', () => {
-  assert.equal(calculateQuote({ agents: 1, months: 6, telephony: 'uztel', lines: 2 }).telephony, 1_320_000);
+test('UTEL paketlari: 12 oyda yillik narx, xodim soni paketga kiradi', () => {
+  const opt = calculateQuote({ agents: 5, months: 12, telephony: 'utel_optima', lines: 99 });
+  assert.equal(opt.telephonyMonthly, 560_000);
+  assert.equal(opt.telephony, 6_720_000, 'utel.uz: Optima AI 6 720 000 so’m/yil');
+  assert.equal(opt.lines, 0, 'UTEL raqam soniga bog’liq emas');
+  assert.equal(opt.telephonyFits, true);
+  assert.equal(calculateQuote({ agents: 3, months: 12, telephony: 'utel_start' }).telephony, 3_420_000);
+  assert.equal(calculateQuote({ agents: 10, months: 12, telephony: 'utel_profi' }).telephony, 11_700_000);
+});
+
+test('UTEL 6 oy: 1 oylik narx olinadi; paket agentlarga yetmasa belgilanadi', () => {
+  const q = calculateQuote({ agents: 5, months: 6, telephony: 'utel_start' });
+  assert.equal(q.telephony, 330_000 * 6);
+  assert.equal(q.telephonyFits, false, '5 agent uchun Start AI (3 xodim) yetmaydi');
+  assert.equal(q.subscriptionTotal, 189_000 * 5 * 6 + 330_000 * 6);
+});
+
+test('tavsiya qilinadigan UTEL paketi agentlar soniga qarab', async () => {
+  const { recommendUtel } = await import('../js/pricing.js');
+  assert.equal(recommendUtel(1), 'utel_start');
+  assert.equal(recommendUtel(3), 'utel_start');
+  assert.equal(recommendUtel(4), 'utel_optima');
+  assert.equal(recommendUtel(7), 'utel_optima');
+  assert.equal(recommendUtel(8), 'utel_profi');
+  assert.equal(recommendUtel(40), 'utel_profi');
 });
 
 test('bonus faqat CRM’ga: telefoniya va chatbot to’lov oylari bo’yicha', () => {
@@ -69,7 +92,7 @@ test('bo’sh maydonlar 0 emas, null bo’ladi', () => {
   assert.equal(noRate.subscriptionTotal, 3_402_000);
   assert.equal(noRate.setupUzs, null);
   assert.equal(noRate.grandTotal, null);
-  const noLines = calculateQuote({ agents: 3, months: 6, telephony: 'uztel', lines: '' });
+  const noLines = calculateQuote({ agents: 3, months: 6, telephony: 'myzvanki', lines: '' });
   assert.equal(noLines.telephony, null);
   assert.equal(noLines.subscriptionTotal, null);
 });

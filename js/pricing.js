@@ -6,15 +6,36 @@ export const PRICING = Object.freeze({
   bonusMonths: Object.freeze({ 6: 1, 12: 3 }), // faqat CRM obunasiga
   setupUsd: (agents) => (agents <= 3 ? 200 : agents <= 5 ? 300 : 400),
   chatbot: Object.freeze({ none: 0, c500: 399_000, c1000: 499_000 }), // so’m / oy, oyma-oy to’lanadi (obuna jamiga kirmaydi)
-  telephony: Object.freeze({ none: 0, myzvanki: 49_000, uztel: 110_000 }), // so’m / raqam / oy
+  telephony: Object.freeze({ none: 0, myzvanki: 49_000 }), // MyZvanki: so’m / raqam / oy (UTEL paketlari pastda)
 });
 
 export const TERMS = Object.freeze([6, 12]);
 
+/**
+ * UTEL IP-telefoniya paketlari (utel.uz, 2026-11). Narx paket uchun, xodim soni paketga kiradi.
+ * monthly[12] — “1 yil” to’lovidagi oylik narx; monthly[6] — 6 oylik narx ma’lum bo’lguncha
+ * “1 oy” narxi olingan (eng yuqori, ya’ni mijoz uchun xavfsiz). Yangi narx kelsa, shu yerda o’zgartiring.
+ */
+export const UTEL_PACKAGES = Object.freeze({
+  utel_start: Object.freeze({ name: 'Start AI', staff: 3, monthly: Object.freeze({ 6: 330_000, 12: 285_000 }), channels: 10, aiCalls: 300, aiMessages: 100 }),
+  utel_optima: Object.freeze({ name: 'Optima AI', staff: 7, monthly: Object.freeze({ 6: 665_000, 12: 560_000 }), channels: 20, aiCalls: 500, aiMessages: 300 }),
+  utel_profi: Object.freeze({ name: 'Profi AI', staff: 15, monthly: Object.freeze({ 6: 1_200_000, 12: 975_000 }), channels: 30, aiCalls: 1_000, aiMessages: 500 }),
+});
+
+export const isUtel = (type) => Object.hasOwn(UTEL_PACKAGES, type);
+
+/** Agentlar soniga yetadigan eng kichik UTEL paketi (15 dan ko’p bo’lsa — Profi AI). */
+export function recommendUtel(agents) {
+  const keys = Object.keys(UTEL_PACKAGES);
+  return keys.find((k) => agents <= UTEL_PACKAGES[k].staff) ?? keys[keys.length - 1];
+}
+
 export const TELEPHONY_LABELS = Object.freeze({
   none: 'Kerak emas',
   myzvanki: 'MyZvanki',
-  uztel: 'UzTel',
+  utel_start: 'UTEL Start AI',
+  utel_optima: 'UTEL Optima AI',
+  utel_profi: 'UTEL Profi AI',
 });
 
 export const CHATBOT_LABELS = Object.freeze({

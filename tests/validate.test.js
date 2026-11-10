@@ -31,7 +31,8 @@ test('ishlanmay qolgan lidlar kunlik lidlardan oshmaydi', () => {
 
 test('raqamlar soni faqat telefoniya tanlanganda majburiy', () => {
   assert.equal(validateField('lines', s({ telephony: 'none', lines: '' })), null);
-  assert.match(validateField('lines', s({ telephony: 'uztel', lines: '' })), /raqamlar sonini kiriting/);
+  assert.match(validateField('lines', s({ telephony: 'myzvanki', lines: '' })), /raqamlar sonini kiriting/);
+  assert.equal(validateField('lines', s({ telephony: 'utel_optima', lines: '' })), null, 'UTEL uchun raqamlar soni kerak emas');
 });
 
 test('turagentlik nomi faqat saqlashda talab qilinadi', () => {

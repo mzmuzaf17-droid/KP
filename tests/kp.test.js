@@ -127,7 +127,7 @@ test('tur qidirish: 14 ta operator, 30 soniya, bron; Turvisor yo’q', () => {
 
 test('bo’sh maydonlar va hisoblanmagan qiymatlar KP’da chiqmaydi', () => {
   const empty = Object.fromEntries(Object.keys(defaultState()).map((k) => [k, '']));
-  for (const state of [empty, { agents: '' }, { fx: '' }, { telephony: 'uztel', lines: '' }]) {
+  for (const state of [empty, { agents: '' }, { fx: '' }, { telephony: 'myzvanki', lines: '' }]) {
     const { html, text } = kp(state);
     assert.ok(!text.includes('NaN'), 'NaN');
     assert.ok(!text.includes('undefined'), 'undefined');
@@ -186,4 +186,13 @@ test('noto’g’ri lidlar prognozi yashiriladi, mustaqil vaqt hisobi saqlanadi'
   assert.ok(!text.includes('qo’shimcha bron oyiga'));
   assert.ok(!text.includes('qo’shimcha sof foyda oyiga'));
   assert.ok(text.includes('tur qidirishda tejalgan vaqt oyiga'));
+});
+
+test('UTEL paketi KP narx jadvalida va shartlarda', () => {
+  const { html, text } = kp({ ...FULL, telephony: 'utel_optima', lines: '' });
+  const table = html.slice(html.indexOf('class="kp-price"'), html.indexOf('</table>', html.indexOf('class="kp-price"')));
+  assert.ok(table.includes('IP-telefoniya UTEL · Optima AI'));
+  assert.ok(table.includes('560 000 × 12 oy') && table.includes('6 720 000'));
+  assert.ok(text.includes('UTEL Optima AI: 7 ta xodimgacha, AI avtoqo’ng’iroq 500 ta'));
+  assert.ok(!/UzTel/.test(text));
 });
