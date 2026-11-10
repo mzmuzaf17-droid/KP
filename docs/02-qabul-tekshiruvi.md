@@ -69,3 +69,12 @@ Eski Safari versiyalari `@page { margin: 0 }` ni e’tiborsiz qoldirishi mumkin;
 |---|---|
 | Jadval ostidagi 3 ta katta kartochka olib tashlandi (raqamlar jadvalda bor); “O’rtacha oyiga” ko’k “Jami” qatorida; bonus oylar bloki qisqardi | ✅ `tests/kp.test.js` |
 | To’liq KP: “Nima olasiz” va butun narx hisobi 2-betda, bo’sh joy qolmaydi; prognozsiz KP 2 bet | ✅ Chromium PDF: 3 / 2 / 3 / 3 bet |
+
+## 2026-11-10: chatbot 1-oyi umumiy to’lovda, dizayn
+
+| O’zgarish | Tekshiruv |
+|---|---|
+| AI chatbotning birinchi oy to’lovi “Umumiy to’lov”ga qo’shiladi; oyma-oy qatori va shartlardagi izoh saqlanadi. Nazorat misoli: 14 280 000 + 3 582 495 + 399 000 = 18 261 495 | ✅ `tests/quote.test.js`, `tests/kp.test.js` |
+| Forma ustuni telefoniya tanlanganda kengayib, o’ng cheti kesilardi — tuzatildi | ✅ Chromium o’lchovi |
+| KP: asosiy raqamlar ikonkalar bilan sarlavha ustiga chiqib turadi; “Joriy etish” va “Shartlar”ga sarlavha; shartlar belgili ikki ustunda; preview’da varaq aniq qog’oz kengligida | ✅ Chromium PDF: 3 / 2 / 3 / 3 bet |
+| IP-telefoniya (UTEL) paketlari | ⏳ utel.uz tarmoqda ochilmadi — paket ma’lumotlari kutilmoqda |

@@ -195,8 +195,9 @@ function render() {
     ['Obuna jami', fmtUzs(q.subscriptionTotal)],
     ['O’rtacha oyiga', fmtUzs(q.avgMonthly)],
     [`O’rnatish (${fmtUsd(q.setupUsd)})`, q.setupUzs === null ? (q.setupUsd === null ? DASH : 'kurs kiritilmagan') : fmtUzs(q.setupUzs)],
+    q.chatbotType !== 'none' ? [`AI chatbot · 1-oy (${CHATBOT_LABELS[q.chatbotType]})`, fmtUzs(q.chatbotFirstMonth)] : null,
     ['Umumiy', fmtUzs(q.grandTotal), 'grand'],
-    q.chatbotType !== 'none' ? [`+ AI chatbot · ${CHATBOT_LABELS[q.chatbotType]}`, `${fmtUzs(q.chatbotMonthly)} / oy`, 'note'] : null,
+    q.chatbotType !== 'none' ? ['Keyin AI chatbot har oy', `${fmtUzs(q.chatbotMonthly)} / oy`, 'note'] : null,
   ].filter(Boolean);
   $('summary').innerHTML = rows.map(([k, v, c = '']) => `<dt class="${c}">${k}</dt><dd class="${c}">${v}</dd>`).join('');
 
@@ -625,7 +626,7 @@ function quoteText() {
   lines.push(`Kimdan: ${from || 'Omon CRM'}`, '');
   lines.push(`CRM: 189 000 × ${q.agents ?? DASH} agent × ${q.months} oy = ${fmtUzs(q.crm)} (+${q.bonusMonths} oy bepul, ${q.usageMonths} oy foydalanish)`);
   if (q.telephonyType !== 'none') lines.push(`${TELEPHONY_LABELS[q.telephonyType]}: ${q.lines} raqam × ${q.months} oy = ${fmtUzs(q.telephony)}`);
-  if (q.chatbotType !== 'none') lines.push(`AI chatbot (${CHATBOT_LABELS[q.chatbotType]}): ${fmtUzs(q.chatbotMonthly)} / oy, har oy alohida to’lanadi`);
+  if (q.chatbotType !== 'none') lines.push(`AI chatbot (${CHATBOT_LABELS[q.chatbotType]}): ${fmtUzs(q.chatbotMonthly)} / oy — 1-oy umumiy summada, keyin har oy alohida`);
   lines.push(`Obuna jami: ${fmtUzs(q.subscriptionTotal)} · o’rtacha oyiga ${fmtUzs(q.avgMonthly)}`);
   lines.push(`O’rnatish va integratsiya (bir martalik): ${fmtUsd(q.setupUsd)}${q.setupUzs !== null ? ` = ${fmtUzs(q.setupUzs)}` : ''}`);
   lines.push(`Umumiy: ${fmtUzs(q.grandTotal)}`);
