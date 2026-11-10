@@ -49,21 +49,30 @@ test('chatbot 1 000 mijoz → 499 000 / oy, muddatga ko’paytirilmaydi', () => 
   assert.equal(q.subscriptionTotal, 189_000 * 6);
 });
 
-test('UTEL paketlari: 12 oyda yillik narx, xodim soni paketga kiradi', () => {
-  const opt = calculateQuote({ agents: 5, months: 12, telephony: 'utel_optima', lines: 99 });
-  assert.equal(opt.telephonyMonthly, 560_000);
-  assert.equal(opt.telephony, 6_720_000, 'utel.uz: Optima AI 6 720 000 so’m/yil');
-  assert.equal(opt.lines, 0, 'UTEL raqam soniga bog’liq emas');
-  assert.equal(opt.telephonyFits, true);
-  assert.equal(calculateQuote({ agents: 3, months: 12, telephony: 'utel_start' }).telephony, 3_420_000);
-  assert.equal(calculateQuote({ agents: 10, months: 12, telephony: 'utel_profi' }).telephony, 11_700_000);
+test('UTEL oyma-oy: 1 oylik narx, obuna jamiga kirmaydi, 1-oyi umumiy to’lovda', () => {
+  for (const months of [6, 12]) {
+    const q = calculateQuote({ agents: 5, months, telephony: 'utel_optima', lines: 99, chatbot: 'none', usdRate: 12000 });
+    assert.equal(q.telephonyMonthly, 665_000, `${months} oy`);
+    assert.equal(q.telephony, 0, 'obuna jamiga kirmaydi');
+    assert.equal(q.lines, 0, 'UTEL raqam soniga bog’liq emas');
+    assert.equal(q.subscriptionTotal, 189_000 * 5 * months);
+    assert.equal(q.utelFirstMonth, 665_000);
+    assert.equal(q.grandTotal, 189_000 * 5 * months + 300 * 12000 + 665_000);
+    assert.equal(q.monthlyExtras, 665_000);
+  }
+  assert.equal(calculateQuote({ agents: 3, months: 12, telephony: 'utel_start' }).telephonyMonthly, 330_000);
+  assert.equal(calculateQuote({ agents: 10, months: 6, telephony: 'utel_profi' }).telephonyMonthly, 1_200_000);
 });
 
-test('UTEL 6 oy: 1 oylik narx olinadi; paket agentlarga yetmasa belgilanadi', () => {
-  const q = calculateQuote({ agents: 5, months: 6, telephony: 'utel_start' });
-  assert.equal(q.telephony, 330_000 * 6);
-  assert.equal(q.telephonyFits, false, '5 agent uchun Start AI (3 xodim) yetmaydi');
-  assert.equal(q.subscriptionTotal, 189_000 * 5 * 6 + 330_000 * 6);
+test('UTEL va chatbot birga: ikkalasining 1-oyi umumiy to’lovda, keyin har oy yig’indisi', () => {
+  const q = calculateQuote({ agents: 5, months: 12, telephony: 'utel_optima', chatbot: 'c500', usdRate: 12000 });
+  assert.equal(q.grandTotal, 11_340_000 + 3_600_000 + 665_000 + 399_000);
+  assert.equal(q.monthlyExtras, 665_000 + 399_000);
+});
+
+test('UTEL paketi agentlarga yetmasa belgilanadi', () => {
+  assert.equal(calculateQuote({ agents: 5, months: 6, telephony: 'utel_start' }).telephonyFits, false);
+  assert.equal(calculateQuote({ agents: 5, months: 6, telephony: 'utel_optima' }).telephonyFits, true);
 });
 
 test('tavsiya qilinadigan UTEL paketi agentlar soniga qarab', async () => {

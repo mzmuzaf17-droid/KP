@@ -122,6 +122,7 @@
 .kp-price tr.kp-total th small, .kp-price tr.kp-total td small { color: var(--on-dark-muted); font-weight: 500; }
 .kp-price tr.kp-total td.num { color: var(--white); font-size: 18px; letter-spacing: -.3px; }
 .kp-price tr.kp-total td.num small { display: inline; margin-left: 4px; font-size: 11px; letter-spacing: 0; }
+.kp-price td.num small.inline { display: inline; margin-left: 4px; }
 .kp-price tr.kp-grand td.num { color: var(--brand-700); font-size: 16px; }
 .kp-price tr.kp-setup th, .kp-price tr.kp-setup td, .kp-price tr.kp-monthly th, .kp-price tr.kp-monthly td { background: var(--bg); }
 

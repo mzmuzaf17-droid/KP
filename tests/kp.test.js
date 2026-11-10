@@ -76,12 +76,12 @@ test('12 oy tanlanganda “6 oy” yoki “+1 oy” qolmaydi', () => {
 
 test('nazorat misoli KP’da to’g’ri chiqadi, chatbot oyma-oy', () => {
   const { html, text } = kp(FULL);
-  for (const s of ['11 340 000', '2 940 000', '14 280 000', '1 190 000', '$300', '756 000', '399 000 so’m / oy']) assert.ok(text.includes(s), s);
+  for (const s of ['11 340 000', '2 940 000', '14 280 000', '1 190 000', '$300', '756 000', '399 000 so’m/oy']) assert.ok(text.includes(s), s);
   assert.ok(!text.includes('4 788 000'), 'chatbot 12 oyga ko’paytirilmaydi');
   assert.ok(!text.includes('19 068 000'));
   assert.ok(text.includes('1-oy umumiy summada, keyin har oy'));
   const grand = html.slice(html.indexOf('class="kp-grand"'), html.indexOf('</tr>', html.indexOf('class="kp-grand"')));
-  assert.ok(grand.includes('18 261 495') && grand.includes('chatbotning 1-oyi'), 'umumiy to’lovga chatbotning 1-oyi kiradi');
+  assert.ok(grand.includes('18 261 495') && grand.includes('chatbot (1-oy)'), 'umumiy to’lovga chatbotning 1-oyi kiradi');
   const total = html.slice(html.indexOf('class="kp-total"'), html.indexOf('</tr>', html.indexOf('class="kp-total"')));
   assert.ok(total.includes('14 280 000'));
 });
@@ -192,7 +192,15 @@ test('UTEL paketi KP narx jadvalida va shartlarda', () => {
   const { html, text } = kp({ ...FULL, telephony: 'utel_optima', lines: '' });
   const table = html.slice(html.indexOf('class="kp-price"'), html.indexOf('</table>', html.indexOf('class="kp-price"')));
   assert.ok(table.includes('IP-telefoniya UTEL · Optima AI'));
-  assert.ok(table.includes('560 000 × 12 oy') && table.includes('6 720 000'));
-  assert.ok(text.includes('UTEL Optima AI: 7 ta xodimgacha, AI avtoqo’ng’iroq 500 ta'));
+  const utelRow = table.slice(table.indexOf('IP-telefoniya UTEL'), table.indexOf('</tr>', table.indexOf('IP-telefoniya UTEL')));
+  assert.ok(utelRow.includes('665 000') && utelRow.includes('so’m/oy') && utelRow.includes('1-oy umumiy summada'));
+  assert.ok(!table.includes('6 720 000') && !table.includes('560 000'), 'yillik narx ishlatilmaydi');
+  const total = table.slice(table.indexOf('class="kp-total"'), table.indexOf('</tr>', table.indexOf('class="kp-total"')));
+  assert.ok(total.includes('11 340 000') && !total.includes('telefoniya'), 'UTEL obuna jamiga kirmaydi');
+  const grand = table.slice(table.indexOf('class="kp-grand"'));
+  assert.ok(grand.includes('UTEL + chatbot (1-oy)'));
+  assert.ok(grand.includes('15 986 495'), '11 340 000 + 3 582 495 + 665 000 + 399 000');
+  assert.ok(text.includes('UTEL Optima AI va AI chatbot obunaga kirmaydi'));
+  assert.ok(text.includes('1 064 000 so’m alohida'));
   assert.ok(!/UzTel/.test(text));
 });

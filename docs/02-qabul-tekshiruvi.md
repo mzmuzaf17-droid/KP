@@ -90,3 +90,11 @@ Manba: buyurtmachi yuborgan utel.uz tariflar sahifasi screenshotlari (1 oy va 1 
 | Forma: agentlar soniga mos paket tavsiya qilinadi; paket yetmasa ogohlantiradi; raqamlar soni faqat MyZvanki uchun | ✅ Chromium |
 | Eski saqlangan UzTel takliflari UTEL Start AI ga o’tadi | ✅ `tests/storage.test.js` |
 | KP: narx jadvalida “IP-telefoniya UTEL · Optima AI”, shartlarda paket tafsiloti | ✅ `tests/kp.test.js`; PDF 3 / 2 / 3 / 3 bet |
+
+## 2026-11-10: UTEL oyma-oy (chatbot kabi)
+
+| O’zgarish | Tekshiruv |
+|---|---|
+| UTEL har doim “1 oy” narxida (330 000 / 665 000 / 1 200 000), 6 yoki 12 oyga ko’paytirilmaydi, obuna jamiga kirmaydi | ✅ `tests/quote.test.js` (6 va 12 oyda bir xil) |
+| UTEL va chatbotning 1-oyi umumiy to’lovda; keyin har oy yig’indisi shartlarda va forma xulosasida | ✅ 5 agent, 12 oy, Optima + chatbot 500: 11 340 000 + 3 582 495 + 665 000 + 399 000 = 15 986 495; keyin har oy 1 064 000 |
+| PDF | ✅ Chromium: 3 / 2 / 3 / 3 bet |
