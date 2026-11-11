@@ -261,7 +261,9 @@
 .kp-footer > span:nth-child(2) { justify-self: end; }
 
 @media print {
-  @page { size: A4; margin: 10mm 0; }
+  /* Nol chekka brauzer qo’shadigan sana, sarlavha, URL va bet raqamiga
+     joy qoldirmaydi. Hujjatning ichki oraliqlari .kp-body da berilgan. */
+  @page { size: A4; margin: 0; }
   .kp-pages { border: 0; border-radius: 0; box-shadow: none; }
   .kp-page {
     display: block;
@@ -285,6 +287,5 @@
    Kontaktlar “Keyingi qadam” kartochkasida bor, shuning uchun chop etishda u ko’rsatilmaydi.
    1-betda ko’k sarlavha qog’oz tepasidan boshlanadi. */
 @media print {
-  @page :first { margin-top: 0; }
   .kp-footer { display: none !important; }
 }
