@@ -61,3 +61,13 @@ test('DOCX local image import works and rejects ambiguous or broken archives',as
   const file=await extractDocxStamp(new File([blob],'template.docx'));assert.equal(file.type,'image/png');assert.equal(file.size,3);
   const many=new Uint8Array(await zipStore({'word/media/a.png':'a','word/media/b.png':'b'}).arrayBuffer());assert.throws(()=>docxMediaEntry(many),/bir nechta/);assert.throws(()=>docxMediaEntry(new Uint8Array([1,2,3])),/DOCX/);
 });
+
+
+test('built-in stamp appears automatically for new and saved quotes, with custom override and hide option',()=>{
+  const [s,q]=sample({contract:{sellerStamp:''}});
+  const automatic=renderContract({state:s,quote:q});
+  assert.equal((automatic.match(/assets\/contract\/default-stamp.webp/g)||[]).length,2);
+  const restored=migrateState(s);assert.equal((renderContract({state:restored,quote:q}).match(/assets\/contract\/default-stamp.webp/g)||[]).length,2);
+  s.contract.sellerStamp='data:image/png;base64,YQ==';assert.ok(!renderContract({state:s,quote:q}).includes('default-stamp.webp'));
+  s.contract.sellerStamp='';s.contract.showSellerStamp='no';assert.ok(!renderContract({state:s,quote:q}).includes('default-stamp.webp'));
+});
