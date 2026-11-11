@@ -1,6 +1,7 @@
 // Saqlash: localStorage kalitlari eski sayt bilan bir xil, shuning uchun avval saqlangan
 // takliflar yangi saytda ham ko’rinadi. Har qanday yozuv o’qilganda migrateState() dan o’tadi.
 import { FALLBACK_USD_RATE, CRM_SEARCH_MINUTES, SELLER } from './pricing.js';
+import { defaultContract, normalizeContract } from './contract.js';
 
 export const SCHEMA_VERSION = 2;
 export const KEYS = Object.freeze({
@@ -39,6 +40,7 @@ export function defaultState(today = todayIso()) {
     responseNow: '', responseAfter: '', searchNow: '', searchAfter: String(CRM_SEARCH_MINUTES), searches: '',
     agents: '3', months: '6', telephony: 'none', lines: '1', chatbot: 'none',
     fx: String(FALLBACK_USD_RATE.rate),
+    contract: defaultContract(),
   };
 }
 
@@ -73,6 +75,7 @@ export function migrateState(raw, today = todayIso()) {
   out.agencyImage = typeof img === 'string' && /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(img) ? img : '';
   out.logoRemoveBackground = src.logoRemoveBackground !== false;
   out.schemaVersion = SCHEMA_VERSION;
+  out.contract = normalizeContract(src.contract);
   return out;
 }
 
