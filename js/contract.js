@@ -2,6 +2,7 @@ import { esc, fmtDate, fmtUzs, fmtDecimal } from './format.js';
 import { PRICING, TELEPHONY_LABELS, CHATBOT_LABELS } from './pricing.js';
 import { CONTRACT_TERMS } from './contract-terms.js';
 
+export const DEFAULT_SELLER_STAMP = 'assets/contract/default-stamp.webp';
 const SAFE_IMAGE = /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/;
 export const SELLER_COMPANY = Object.freeze({
   sellerCompany: '', sellerDirector: '', sellerShort: '', sellerAddress: '',
@@ -107,7 +108,7 @@ export function paymentTable(c) {
   return `<table class="contract-table"><thead><tr><th>№</th><th>To‘lov maqsadi</th><th>Summa</th><th>To‘lov muddati</th></tr></thead><tbody>${c.rows.map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.purpose)}${r.kind==='percent'?` (${esc(r.percent)}%)`:''}</td><td>${esc(amountText(rowAmounts(r,c.totals)))}</td><td>${esc(dueText(r))}</td></tr>`).join('')}</tbody></table>`;
 }
 function party(c,side) {
-  const buyer=side==='buyer',stamp=buyer?c.buyerStamp:c.showSellerStamp==='yes'?c.sellerStamp:'',signature=buyer?c.buyerSignature:c.sellerSignature;
+  const buyer=side==='buyer',stamp=buyer?c.buyerStamp:c.showSellerStamp==='yes'?(c.sellerStamp||DEFAULT_SELLER_STAMP):'',signature=buyer?c.buyerSignature:c.sellerSignature;
   return `<div class="contract-party"><h3>${buyer?'Buyurtmachi':'Bajaruvchi'}</h3><p>${esc(c[side+'Company']||'________________')}</p>${[['Address','Manzil'],['Bank','Bank'],['Account','H/r'],['Mfo','MFO'],['Stir','STIR']].map(([key,label])=>`<p>${label}: ${esc(c[side+key]||'________________')}</p>`).join('')}<div class="contract-sign"><p>Rahbar: __________ ${esc(buyer?c.buyerDirector:c.sellerShort||c.sellerDirector)}</p>${signature?`<img class="contract-signature" src="${esc(signature)}" alt="${buyer?'Buyurtmachi':'Bajaruvchi'} imzosi">`:''}<p>M.O‘.</p>${stamp?`<img class="contract-stamp" src="${esc(stamp)}" alt="${buyer?'Buyurtmachi':'Bajaruvchi'} muhri">`:''}</div></div>`;
 }
 function serviceTable(q) {
