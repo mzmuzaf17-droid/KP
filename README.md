@@ -70,3 +70,17 @@ avvalgi takliflar yangi saytda ham ko’rinadi. Ochilganda ular yangi formatga o
 
 Repo ildizi — sayt ildizi (Framework: Other, build buyrug’i va output papkasi bo’sh). Hozirgi
 toursales-insight loyihasini shu repoga ulash yoki yangi loyiha ochish kifoya.
+
+## Shartnoma
+
+Yuqoridagi **Shartnoma** tugmasi KP hisobidan shartnoma va 1-ilovani yaratadi.
+
+1. **Asl Word faylidan rekvizit va muhrni olish** maydoniga shablon DOCXni tanlang. Bajaruvchi rekvizitlari va bitta muhr rasmi brauzer ichida olinadi. Fayl, rekvizitlar va imzolar serverga yuborilmaydi va kodda saqlanmaydi.
+2. Shartnoma raqami, sanalar va buyurtmachi rekvizitlarini kiriting. KPdagi agentlik va rahbar shartnomaga o‘tadi; yuridik nom va F.I.Sh. alohida o‘zgartirilishi mumkin.
+3. To‘liq, 2 yoki 3 qism, o‘rnatish alohida yoki erkin jadvalni tanlang. Summalar yoki foiz, aniq sana yoxud o‘rnatish/obuna boshlanishidan keyingi kunlar kiritiladi. USD ekvivalenti va so‘m alohida tekshiriladi.
+4. Muhr va imzolarni mahalliy PNG/JPG/WebP rasmdan ham qo‘shish mumkin. Ular shartnoma va ilovada chiqadi. Yangi mijoz ochilganda bajaruvchi profili saqlanadi; buyurtmachi va to‘lov jadvali yangilanadi.
+5. **PDF chiqarish** yoki **Word yuklash** orqali eksport qiling. Rekvizitlar, sanalar yoki to‘lov yig‘indisi mos kelmasa, eksport oldidan xatolar ko‘rsatiladi.
+
+UTEL va chatbotning birinchi oyi dastlabki jadvalga kiradi; keyingi oylar uchun alohida to‘lov tartibi yoziladi. MyZvanki tanlangan obuna muddati uchun hisoblanadi. Erkin jadval summalari KP o‘zgarganda o‘z-o‘zidan almashtirilmaydi; farq ko‘rsatiladi.
+
+Shartnoma bandlari foydalanuvchi shablonidan olingan. Narx, muddat, xizmatlar va to‘lov jadvaliga tegishli bandlar hisobga mos tuziladi; qolgan bandlar asl holida saqlanadi.

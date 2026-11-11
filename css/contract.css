@@ -1,0 +1,51 @@
+.document-switch { max-width: 1560px; margin: 12px auto; padding: 0 24px; display:flex; align-items:center; flex-wrap:wrap; gap:12px; }
+.document-switch > span { color:var(--muted); font-size:13px; }
+.document-switch [role="group"] { display:flex; gap:8px; }
+.document-switch button[aria-pressed="true"] { background:var(--navy);color:var(--white);border-color:var(--navy); }
+body[data-document="contract"] .editor > details, body[data-document="contract"] .editor > .privacy-note { display:none; }
+#contractEditor > .card { margin-bottom:16px; }
+.contract-payment { min-width:0; border:1px solid var(--line); border-radius:10px; padding:16px; margin:0 0 16px; }
+.contract-payment legend { padding:0 6px; font-weight:700; }
+#contractPaymentTotals { font-size:13px; line-height:1.6; }
+#contractPaymentTotals[data-valid="false"], .contract-errors { color:#9f1c21; }
+.contract-errors { padding:16px; border:1px solid currentColor; border-radius:10px; margin-bottom:16px; font-size:14px; }
+.contract-errors h2 { font-size:16px;margin:0 0 8px; }
+.contract-errors ul { padding-left:20px; }
+.contract-errors a { color:inherit; }
+.contract-image-row { display:flex;align-items:center;gap:12px; }
+.contract-image-row img { max-width:90px;max-height:90px;object-fit:contain; }
+.contract-document { box-sizing:border-box; width:794px;max-width:100%;margin:0 auto;padding:44px; background:#fff; color:#000; font-family:'Times New Roman',serif;font-size:15px;line-height:1.4;box-shadow:var(--shadow-md);overflow-wrap:anywhere; }
+.contract-document * { box-sizing:border-box; }
+.contract-document h1 { font-size:17px;text-align:center;margin:0 0 16px; }
+.contract-document h2 { font-size:16px;text-align:center;margin:18px 0 10px;break-after:avoid; }
+.contract-document h3 { font-size:15px;margin:0 0 8px; }
+.contract-document p { margin:0 0 9px;text-align:justify; }
+.contract-date { display:flex;justify-content:space-between;margin-bottom:14px;gap:12px; }
+.contract-table { width:100%;border-collapse:collapse;margin:14px 0;font-size:13px;table-layout:fixed; }
+.contract-table th,.contract-table td { border:1px solid #999;padding:7px;vertical-align:top;overflow-wrap:anywhere; }
+.contract-table th { background:#eee;text-align:center; }
+.contract-table th:first-child { width:7%; }
+.contract-table tr { break-inside:avoid; }
+.contract-table thead { display:table-header-group; }
+.contract-parties { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;margin-top:24px;break-inside:avoid; }
+.contract-party { min-width:0; }
+.contract-party p { text-align:left; }
+.contract-sign { margin-top:24px;break-inside:avoid; }
+.contract-stamp { display:block;width:120px;height:auto;max-height:125px;object-fit:contain; }
+.contract-signature { display:block;width:130px;height:50px;object-fit:contain;object-position:left center; }
+.contract-parties-section { break-inside:avoid; }
+.contract-annex { margin-top:40px; }
+.contract-annex-heading { text-align:right!important; }
+@media(max-width:600px) { .document-switch {padding:0 12px;gap:8px;} .document-switch > span{display:none;} .document-switch .btn{font-size:12px;padding:8px 10px;} .contract-document{padding:20px;font-size:14px;} .contract-table{font-size:11px;} .contract-table td,.contract-table th{padding:4px;} .contract-parties{grid-template-columns:1fr;gap:24px;} }
+@media print {
+  .document-switch { display:none!important; }
+  body[data-document="contract"] .contract-document { width:210mm;max-width:none;box-shadow:none;padding:16mm 18mm;font-size:11pt;line-height:1.25; }
+  body[data-document="contract"] .contract-document h1 {font-size:12pt;}
+  body[data-document="contract"] .contract-document h2 {font-size:11.5pt;}
+  body[data-document="contract"] .contract-document h3 {font-size:11pt;}
+  body[data-document="contract"] .contract-table {font-size:9pt;}
+  body[data-document="contract"] .contract-parties {grid-template-columns:minmax(0,1fr) minmax(0,1fr);}
+  body[data-document="contract"] .contract-annex {break-before:page;margin-top:0;padding-top:12mm;}
+  .contract-document p {orphans:3;widows:3;}
+  .contract-document img {print-color-adjust:exact;-webkit-print-color-adjust:exact;}
+}

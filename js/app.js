@@ -11,6 +11,8 @@ import { compressLogo, logoWithoutBackdrop, SAFE_IMAGE } from './logo.js';
 import { icon } from './icons.js';
 import { logoMark } from './brand.js';
 import { renderKp } from './kp.js';
+import { renderContract, normalizeContract, SELLER_COMPANY } from './contract.js';
+import { mountContractUI } from './contract-ui.js';
 
 const $ = (id) => document.getElementById(id);
 const store = (() => {
@@ -34,6 +36,7 @@ let selectedId = null;
 let rateMeta = { kind: 'fallback', date: FALLBACK_USD_RATE.date, manual: false };
 let logoSrc = '';
 let logoToken = 0;
+let contractUI;
 
 /* ---------- yordamchi ---------- */
 function toast(message) {
@@ -63,7 +66,10 @@ function snapshot(s) {
   return JSON.stringify(rest);
 }
 function blankLike(s) {
-  return { ...defaultState(), sellerName: s.sellerName, sellerPhone: s.sellerPhone, date: s.date, fx: s.fx };
+  const blank = { ...defaultState(), sellerName: s.sellerName, sellerPhone: s.sellerPhone, date: s.date, fx: s.fx };
+  const c = normalizeContract(s.contract);
+  for (const key of [...Object.keys(SELLER_COMPANY), 'showSellerStamp', 'sellerStamp', 'sellerSignature']) blank.contract[key] = c[key];
+  return blank;
 }
 function savedRecord() {
   return selectedId ? readSaved(store).find((x) => x.id === selectedId) ?? null : null;
@@ -225,7 +231,10 @@ function render() {
   $('summary').innerHTML = rows.map(([k, v, c = '']) => `<dt class="${c}">${k}</dt><dd class="${c}">${v}</dd>`).join('');
 
   cardSummaries(q);
-  $('kp').innerHTML = renderKp({ state, quote: q, forecast: f, rateMeta, logoSrc });
+  $('kp').innerHTML = contractUI?.mode === 'contract'
+    ? renderContract({ state, quote: q })
+    : renderKp({ state, quote: q, forecast: f, rateMeta, logoSrc });
+  contractUI?.render(state, q);
   renderStatus();
 }
 
@@ -337,7 +346,8 @@ async function newQuote() {
     if (!ok) return;
   }
   // Ijrochi o’zgarmaydi: har bir sotuvchi o’z ismini bir marta yozadi.
-  loadState({ ...defaultState(), sellerName: state.sellerName, sellerPhone: state.sellerPhone, fx: state.fx });
+  loadState({ ...blankLike(state), date: defaultState().date });
+  contractUI?.setMode('kp');
   setPane('form');
   $('agency').focus();
   toast('Yangi taklif ochildi');
@@ -612,9 +622,15 @@ async function updateRate() {
 }
 
 /* ---------- PDF, ko’rsatish, nusxalash, Forma/KP ---------- */
-function printPdf() {
+async function printPdf() {
+  if (contractUI?.mode === 'contract' && !contractUI.validate()) return;
+  await document.fonts.ready;
+  try { await Promise.all([...$('kp').querySelectorAll('img')].map(img => img.decode())); }
+  catch { toast('Hujjat rasmlari yuklanmadi. Qayta urinib ko‘ring.'); return; }
   const original = document.title;
-  document.title = pdfFileName(state.agency, state.date);
+  document.title = contractUI?.mode === 'contract'
+    ? `Shartnoma_${state.agency || 'mijoz'}_${state.contract?.number || ''}`
+    : pdfFileName(state.agency, state.date);
   const restore = () => { document.title = original; };
   window.addEventListener('afterprint', restore, { once: true });
   window.print();
@@ -789,6 +805,11 @@ function init() {
     rateMeta = draft.rateMeta;
     if (selectedId && !savedRecord()) selectedId = null;
   }
+  contractUI = mountContractUI({
+    getState: () => state, getQuote: () => quoteOf(state),
+    onChange: (contract) => { state.contract = contract; render(); if (!persistDraft()) toast('Brauzer xotirasi to‘lgan. JSON zaxirani yuklab oling.'); },
+    onRender: render, onMode: () => {}, notify: toast,
+  });
   bind();
   setPane(session.get('omon-kp-pane') === 'kp' ? 'kp' : 'form');
   fillForm();
