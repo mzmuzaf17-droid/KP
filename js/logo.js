@@ -146,3 +146,43 @@ export async function logoWithoutBackdrop(src) {
   cache.set(src, result);
   return result;
 }
+
+
+const bounded = (v, fallback, min, max) => Number.isFinite(Number(v)) ? Math.max(min, Math.min(max, Number(v))) : fallback;
+export function normalizeLogo(raw = {}) {
+  raw = raw && typeof raw === 'object' && !Array.isArray(raw) ? raw : {};
+  return {
+    shape: ['circle', 'rounded', 'original'].includes(raw.shape) ? raw.shape : 'circle',
+    fit: raw.fit === 'cover' ? 'cover' : 'contain',
+    zoom: bounded(raw.zoom, 1, 1, 3), x: bounded(raw.x, 0, -100, 100), y: bounded(raw.y, 0, -100, 100),
+    size: bounded(raw.size, 64, 48, 72), whiteBackground: raw.whiteBackground === true,
+  };
+}
+
+/** The same raster is used for editor, KP and PDF; the source image stays intact. */
+export async function prepareLogo(src, raw, preview) {
+  const opt = normalizeLogo(raw);
+  const img = await loadImage(src);
+  const canvas = document.createElement('canvas');
+  canvas.width = 512;
+  canvas.height = opt.shape === 'original' ? Math.max(128, Math.round(512 / Math.min(3, Math.max(0.5, img.naturalWidth / img.naturalHeight)))) : 512;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  ctx.save();
+  ctx.beginPath();
+  if (opt.shape === 'circle') ctx.arc(w / 2, h / 2, w / 2, 0, Math.PI * 2);
+  else if (opt.shape === 'rounded') ctx.roundRect(0, 0, w, h, 80);
+  else ctx.rect(0, 0, w, h);
+  ctx.clip();
+  if (opt.whiteBackground) { ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h); }
+  const scale = (opt.fit === 'cover' ? Math.max(w / img.naturalWidth, h / img.naturalHeight) : Math.min(w / img.naturalWidth, h / img.naturalHeight)) * opt.zoom;
+  const dw = img.naturalWidth * scale, dh = img.naturalHeight * scale;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(img, (w - dw) / 2 + opt.x / 100 * w / 2, (h - dh) / 2 + opt.y / 100 * h / 2, dw, dh);
+  ctx.restore();
+  if (preview) {
+    preview.width = w; preview.height = h;
+    preview.getContext('2d').drawImage(canvas, 0, 0);
+  }
+  return canvas.toDataURL('image/png');
+}

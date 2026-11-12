@@ -7,7 +7,7 @@ import {
   buildBackup, parseBackup, mergeSaved,
 } from './storage.js';
 import { validateField } from './validate.js';
-import { compressLogo, logoWithoutBackdrop, SAFE_IMAGE } from './logo.js';
+import { compressLogo, logoWithoutBackdrop, SAFE_IMAGE, normalizeLogo, prepareLogo } from './logo.js';
 import { icon } from './icons.js';
 import { logoMark } from './brand.js';
 import { renderKp } from './kp.js';
@@ -102,21 +102,38 @@ function renderStatus() {
 }
 
 /* ---------- logotip ---------- */
+const logoControlKeys = { logoShape: 'shape', logoFit: 'fit', logoZoom: 'zoom', logoX: 'x', logoY: 'y', logoSize: 'size', logoWhiteBackground: 'whiteBackground' };
 async function refreshLogo() {
   const raw = SAFE_IMAGE.test(state.agencyImage) ? state.agencyImage : '';
   const token = ++logoToken;
-  $('logoThumb').hidden = !raw;
-  $('logoRemove').hidden = !raw;
-  $('logoBgRow').hidden = !raw;
+  const opt = state.logo = normalizeLogo(state.logo);
+  for (const id of ['logoThumb', 'logoRemove', 'logoBgRow', 'logoControls']) $(id).hidden = !raw;
   $('logoPickText').textContent = raw ? 'Logotipni almashtirish' : 'Logotip yuklash';
-  $('logoRemoveBackground').checked = state.logoRemoveBackground !== false;
-  if (raw) $('logoThumbImg').src = raw; else $('logoThumbImg').removeAttribute('src');
-  logoSrc = raw;
-  if (raw && state.logoRemoveBackground !== false) {
-    const clean = await logoWithoutBackdrop(raw);
-    if (token !== logoToken) return;
-    logoSrc = clean || raw;
+  $('logoRemoveBackground').checked = state.logoRemoveBackground === true;
+  for (const [id, key] of Object.entries(logoControlKeys)) {
+    if ($(id).type === 'checkbox') $(id).checked = opt[key]; else $(id).value = opt[key];
   }
+  $('logoZoomValue').textContent = `${Math.round(opt.zoom * 100)}%`;
+  $('logoSizeValue').textContent = `${opt.size} px`;
+  $('logoCropStage').dataset.shape = opt.shape;
+  try {
+    const source = raw && state.logoRemoveBackground === true ? await logoWithoutBackdrop(raw) : raw;
+    if (token !== logoToken) return;
+    const prepared = source ? await prepareLogo(source, opt) : '';
+    if (token !== logoToken) return;
+    logoSrc = prepared;
+    if (prepared) {
+      $('logoThumbImg').src = prepared;
+      const img = new Image();
+      img.onload = () => {
+        if (token !== logoToken) return;
+        const canvas = $('logoCropCanvas');
+        canvas.width = img.naturalWidth; canvas.height = img.naturalHeight;
+        canvas.getContext('2d').drawImage(img, 0, 0);
+      };
+      img.src = prepared;
+    } else $('logoThumbImg').removeAttribute('src');
+  } catch { if (token !== logoToken) return; logoSrc = raw; toast('Logo ko‘rinishini tayyorlab bo‘lmadi'); }
   render();
 }
 
@@ -624,6 +641,7 @@ async function updateRate() {
 /* ---------- PDF, ko’rsatish, nusxalash, Forma/KP ---------- */
 async function printPdf() {
   if (contractUI?.mode === 'contract' && !contractUI.validate()) return;
+  await refreshLogo();
   await document.fonts.ready;
   try { await Promise.all([...$('kp').querySelectorAll('img')].map(img => img.decode())); }
   catch { toast('Hujjat rasmlari yuklanmadi. Qayta urinib ko‘ring.'); return; }
@@ -717,6 +735,8 @@ function bind() {
     if (!file) return;
     try {
       state.agencyImage = await compressLogo(file);
+      state.logo = normalizeLogo();
+      state.logoRemoveBackground = false;
       await refreshLogo();
       toast(persistDraft() ? 'Logotip qo’shildi' : 'Logotip ko’rinmoqda, lekin brauzer xotirasi to’lgan — zaxirani yuklab oling');
     } catch (err) {
@@ -734,6 +754,35 @@ function bind() {
     state.logoRemoveBackground = e.target.checked;
     refreshLogo();
     persistDraft();
+  });
+
+  const updateLogo = () => { refreshLogo(); persistDraft(); };
+  for (const [id, key] of Object.entries(logoControlKeys)) $(id).addEventListener('input', () => {
+    state.logo = normalizeLogo({ ...state.logo, [key]: $(id).type === 'checkbox' ? $(id).checked : $(id).value });
+    updateLogo();
+  });
+  $('logoReset').addEventListener('click', () => {
+    state.logo = { ...normalizeLogo(state.logo), zoom: 1, x: 0, y: 0 }; updateLogo();
+  });
+  const stage = $('logoCropStage');
+  let drag = null;
+  stage.addEventListener('pointerdown', (e) => {
+    if (e.button !== 0) return;
+    stage.setPointerCapture(e.pointerId);
+    drag = { px: e.clientX, py: e.clientY, ...normalizeLogo(state.logo) };
+  });
+  stage.addEventListener('pointermove', (e) => {
+    if (!drag) return;
+    const rect = $('logoCropCanvas').getBoundingClientRect();
+    state.logo = normalizeLogo({ ...state.logo, x: drag.x + (e.clientX - drag.px) / rect.width * 200, y: drag.y + (e.clientY - drag.py) / rect.height * 200 });
+    updateLogo();
+  });
+  for (const event of ['pointerup', 'pointercancel', 'lostpointercapture']) stage.addEventListener(event, () => { drag = null; });
+  stage.addEventListener('keydown', (e) => {
+    const direction = { ArrowLeft: [-2, 0], ArrowRight: [2, 0], ArrowUp: [0, -2], ArrowDown: [0, 2] }[e.key];
+    if (!direction) return;
+    e.preventDefault();
+    state.logo = normalizeLogo({ ...state.logo, x: state.logo.x + direction[0], y: state.logo.y + direction[1] }); updateLogo();
   });
 
   $('saveTop').addEventListener('click', saveQuote);

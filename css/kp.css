@@ -289,3 +289,12 @@
 @media print {
   .kp-footer { display: none !important; }
 }
+
+/* Prepared logo pixels are shared with PDF; no white card or inner padding. */
+.kp-hero-partner { height: var(--partner-size, 64px); max-width: 150px; padding: 0; background: transparent; border-radius: 0; }
+.kp-hero-partner img { height: var(--partner-size, 64px); max-height: none; max-width: 150px; width: auto; object-fit: contain; }
+@container (max-width: 600px) {
+  .kp-hero-brand { gap: 9px; }
+  .kp-hero-partner img { height: min(var(--partner-size, 64px), 52px); max-width: 104px; }
+  .kp-hero-partner { height: min(var(--partner-size, 64px), 52px); }
+}
