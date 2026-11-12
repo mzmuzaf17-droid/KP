@@ -1,6 +1,7 @@
 // Saqlash: localStorage kalitlari eski sayt bilan bir xil, shuning uchun avval saqlangan
 // takliflar yangi saytda ham ko’rinadi. Har qanday yozuv o’qilganda migrateState() dan o’tadi.
 import { FALLBACK_USD_RATE, CRM_SEARCH_MINUTES, SELLER } from './pricing.js';
+import { normalizeLogo } from './logo.js';
 import { defaultContract, normalizeContract } from './contract.js';
 
 export const SCHEMA_VERSION = 2;
@@ -32,7 +33,7 @@ export function todayIso(now = new Date()) {
 export function defaultState(today = todayIso()) {
   return {
     schemaVersion: SCHEMA_VERSION,
-    agency: '', agencyImage: '', logoRemoveBackground: true,
+    agency: '', agencyImage: '', logoRemoveBackground: false, logo: normalizeLogo(),
     owner: '', contact: '', city: '',
     date: today, validDays: '7',
     sellerName: SELLER.name, sellerPhone: SELLER.phone,
@@ -73,7 +74,8 @@ export function migrateState(raw, today = todayIso()) {
 
   const img = src.agencyImage;
   out.agencyImage = typeof img === 'string' && /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(img) ? img : '';
-  out.logoRemoveBackground = src.logoRemoveBackground !== false;
+  out.logoRemoveBackground = src.logoRemoveBackground === true;
+  out.logo = normalizeLogo(src.logo);
   out.schemaVersion = SCHEMA_VERSION;
   out.contract = normalizeContract(src.contract);
   return out;

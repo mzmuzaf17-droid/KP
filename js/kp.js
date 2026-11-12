@@ -1,3 +1,4 @@
+import { normalizeLogo } from './logo.js';
 // KP hujjati. Faqat calculateQuote() va leadForecast() natijasini ko’rsatadi.
 // To’ldirilmagan ko’rsatkichlar KP’ga chiqmaydi; bo’lim bo’sh qolsa, u butunlay tushib qoladi
 // va qolgan bo’limlar 01 dan qayta raqamlanadi.
@@ -65,8 +66,9 @@ function hero({ state, q, logoSrc }) {
 
   const lead = `Murojaatlar, mijozlar, qo’ng’iroqlar va hisobotlar bitta tizimda. Quyida ${q.agents ? `${q.agents} agentli jamoangiz uchun narx hisobini` : 'narx hisobini'} keltirdik.`;
   const logo = SAFE_LOGO.test(logoSrc || '') ? logoSrc : '';
+  const logoOptions = normalizeLogo(state.logo);
   const partner = logo
-    ? `<span class="kp-hero-x" aria-hidden="true"></span><span class="kp-hero-partner"><img src="${logo}" alt="${esc(agency || 'Turagentlik')} logotipi"></span>`
+    ? `<span class="kp-hero-x" aria-hidden="true"></span><span class="kp-hero-partner" data-shape="${logoOptions.shape}" style="--partner-size:${logoOptions.size}px"><img src="${logo}" alt="${esc(agency || 'Turagentlik')} logotipi"></span>`
     : '';
 
   return `<section class="kp-hero">

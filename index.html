@@ -66,7 +66,19 @@
               <button class="btn ghost danger" type="button" id="logoRemove" hidden><span data-icon="trash-2"></span>Olib tashlash</button>
             </div>
           </div>
-          <label class="check" id="logoBgRow" hidden><input type="checkbox" id="logoRemoveBackground" checked><span>Logotip atrofidagi qora yoki ko’k fonni olib tashlash</span></label>
+          <div id="logoControls" class="logo-controls" hidden>
+            <div class="field"><label for="logoShape">Logo shakli</label><select id="logoShape"><option value="circle">Dumaloq</option><option value="rounded">Yumaloq kvadrat</option><option value="original">Asl shakl</option></select></div>
+            <div class="field"><label for="logoFit">Joylashtirish</label><select id="logoFit"><option value="contain">To‘liq sig‘dirish</option><option value="cover">Joyni to‘ldirish</option></select></div>
+            <div class="logo-crop-stage" id="logoCropStage" tabindex="0" role="group" aria-label="Logoni surish. Strelka tugmalari bilan ham siljitish mumkin." aria-describedby="logoCropHint"><canvas id="logoCropCanvas" width="512" height="512"></canvas></div>
+            <p class="hint full" id="logoCropHint">Rasmni suring yoki quyidagi sozlamalardan foydalaning. Dumaloq chegaradan tashqarisi KP va PDF’da kesiladi.</p>
+            <div class="field full"><label for="logoZoom">Kattalashtirish <output id="logoZoomValue"></output></label><input id="logoZoom" type="range" min="1" max="3" step="0.01"></div>
+            <div class="field"><label for="logoX">Chap / o‘ng</label><input id="logoX" type="range" min="-100" max="100" step="1"></div>
+            <div class="field"><label for="logoY">Yuqori / past</label><input id="logoY" type="range" min="-100" max="100" step="1"></div>
+            <div class="field full"><label for="logoSize">KP’dagi o‘lcham <output id="logoSizeValue"></output></label><input id="logoSize" type="range" min="48" max="72" step="2"></div>
+            <label class="check full"><input type="checkbox" id="logoWhiteBackground"><span>Logo ostiga oq fon qo‘yish</span></label>
+            <button class="btn ghost" type="button" id="logoReset">Markazga qaytarish</button>
+          </div>
+          <label class="check" id="logoBgRow" hidden><input type="checkbox" id="logoRemoveBackground" ><span>Logotip atrofidagi qora yoki ko’k fonni olib tashlash</span></label>
           <small class="hint">KP tepasida, Omon CRM yonida chiqadi. JPG, PNG, WebP, AVIF yoki GIF, 20 MB gacha — rasm brauzerda kichraytiriladi.</small>
         </div>
         <div class="field"><label for="date">Taklif sanasi</label><input id="date" data-key="date" type="date"></div>
